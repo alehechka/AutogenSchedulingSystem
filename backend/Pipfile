@@ -11,6 +11,8 @@ psycopg2-binary = "*"
 flask = "*"
 marshmallow = "*"
 flask-cors = "*"
+python-jose-cryptodome = "*"
+pycryptodome = "*"
 
 [requires]
 python_version = "3.7"
