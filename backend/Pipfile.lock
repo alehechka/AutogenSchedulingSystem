@@ -154,7 +154,7 @@
                 "sha256:c292deeca9176c162e5a8e19be9c60edb99e855dbad3ea032f94e23249873ba6"
             ],
             "index": "pypi",
-            "version": "==3.3.1"
+            "version": "==3.9.0"
         },
         "python-jose-cryptodome": {
             "hashes": [
