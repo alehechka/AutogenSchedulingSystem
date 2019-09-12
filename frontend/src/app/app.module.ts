@@ -13,7 +13,7 @@ import {ExamsComponent} from './exams/exams.component';
 
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {
-  MatToolbarModule, MatButtonModule, MatCardModule
+  MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule
 } from '@angular/material';
 
 
@@ -40,6 +40,7 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
+    MatInputModule,
   ],
   providers: [ExamsApiService],
   bootstrap: [AppComponent]
