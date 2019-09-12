@@ -12,7 +12,8 @@ flask = "*"
 marshmallow = "*"
 flask-cors = "*"
 python-jose-cryptodome = "*"
-pycryptodome = "3.9.0"
+alembic = "*"
+pycryptodome = "*"
 
 [requires]
 python_version = "3.7"
