@@ -1,4 +1,5 @@
-import {Component} from '@angular/core';
+import * as Auth0 from 'auth0-web';
+import {Component, OnInit} from '@angular/core';
 import {ExamsApiService} from "./exams-api.service";
 import {Router} from "@angular/router";
 
@@ -28,6 +29,7 @@ import {Router} from "@angular/router";
 
         <button mat-raised-button
                 color="primary"
+                disabled={{!authenticated}}
                 (click)="saveExam()">
           Save Exam
         </button>
@@ -45,7 +47,8 @@ import {Router} from "@angular/router";
     }
   `]
 })
-export class ExamFormComponent {
+export class ExamFormComponent implements OnInit {
+  authenticated = false;
   exam = {
     title: '',
     description: '',
@@ -53,6 +56,11 @@ export class ExamFormComponent {
   };
 
   constructor(private examsApi: ExamsApiService, private router: Router) { }
+
+  ngOnInit() {
+    const self = this;
+    Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
+  }
 
   updateTitle(event: any) {
     this.exam.title = event.target.value;

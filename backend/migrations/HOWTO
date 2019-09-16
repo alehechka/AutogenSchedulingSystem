@@ -1,0 +1,5 @@
+alembic revision -m "describe update"
+
+edit the created file's upgrade function
+
+alembic upgrade head
