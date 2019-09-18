@@ -14,6 +14,7 @@ flask-cors = "*"
 python-jose-cryptodome = "*"
 alembic = "*"
 pycryptodome = "*"
+auth0-python = "*"
 
 [requires]
 python_version = "3.7"

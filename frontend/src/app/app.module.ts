@@ -13,13 +13,19 @@ import {ExamsComponent} from './exams/exams.component';
 
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {
-  MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule
+  MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule,
 } from '@angular/material';
+
+import { StoresComponent } from './stores/stores.component';
+import { StoreFormComponent } from './stores/stores-form.component';
+import { StoresApiService } from './stores/stores-api.service';
 
 
 const appRoutes: Routes = [
   { path: 'new-exam', component: ExamFormComponent },
   { path: '', component: ExamsComponent },
+  { path: 'new-store', component: StoreFormComponent },
+  { path: 'stores', component: StoresComponent },
   { path: 'callback', component: CallbackComponent },
 ];
 
@@ -28,6 +34,8 @@ const appRoutes: Routes = [
     AppComponent,
     ExamFormComponent,
     ExamsComponent,
+    StoreFormComponent,
+    StoresComponent,
     CallbackComponent,
   ],
   imports: [
@@ -40,9 +48,9 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule,
+    MatInputModule, 
   ],
-  providers: [ExamsApiService],
+  providers: [ExamsApiService, StoresApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -5,7 +5,7 @@ from flask_cors import CORS
 from .entities.entity import Session, engine, Base
 from .entities.exam import Exam, ExamSchema
 from .entities.store import Store, StoreSchema
-from .auth import AuthError, requires_auth, requires_role
+from .auth import AuthError, requires_auth, requires_role, get_user
 
 # creating the Flask application
 app = Flask(__name__)
@@ -14,7 +14,13 @@ CORS(app)
 # if needed, generate database schema
 Base.metadata.create_all(engine)
 
+@app.route('/user')
+@requires_auth
+def get_user():
+    return auth.get_user
+
 @app.route('/stores')
+@requires_auth
 def get_stores():
     # fetching from the database
     session = Session()
@@ -28,25 +34,25 @@ def get_stores():
     session.close()
     return jsonify(stores)
 
-@app.route('/stores', methods=['POST'])
+@app.route('/stores', methods=['POST'], endpoint='add_store')
 @requires_auth
 @requires_role('admin')
 def add_store():
-    # mount exam object
-    posted_exam = StoreSchema(only=('street_address', 'phone_number', 'zip_code', 'name', 'description', 'expiration_date')) \
+    # mount store object
+    posted_store = StoreSchema(only=('street_address', 'phone_number', 'zip_code', 'name', 'description')) \
         .load(request.get_json())
 
-    exam = Store(**posted_exam, created_by="HTTP post request")
+    store = Store(**posted_store, created_by="HTTP post request")
 
-    # persist exam
+    # persist store
     session = Session()
     session.add(store)
     session.commit()
 
-    # return created exam
-    new_exam = ExamSchema().dump(exam)
+    # return created store
+    new_store = StoreSchema().dump(store)
     session.close()
-    return jsonify(new_exam), 201
+    return jsonify(new_store), 201
 
 @app.route('/exams')
 def get_exams():
@@ -81,8 +87,9 @@ def add_exam():
     session.close()
     return jsonify(new_exam), 201
 
-@app.route('/exams/<examId>', methods=['DELETE'])
-#@requires_role('admin')
+@app.route('/exams/<examId>', methods=['DELETE'], endpoint='delete_exam')
+@requires_auth
+@requires_role('admin')
 def delete_exam(examId):
     session = Session()
     exam = session.query(Exam).filter_by(id=examId).first()
