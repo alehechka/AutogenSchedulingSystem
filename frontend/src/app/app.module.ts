@@ -5,11 +5,8 @@ import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 
 import {AppComponent} from './app.component';
-import {ExamsApiService} from './exams/exams-api.service';
 
-import {ExamFormComponent} from './exams/exam-form.component';
 import {RouterModule, Routes} from '@angular/router';
-import {ExamsComponent} from './exams/exams.component';
 
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {
@@ -20,22 +17,23 @@ import { StoresComponent } from './stores/stores.component';
 import { StoreFormComponent } from './stores/stores-form.component';
 import { StoresApiService } from './stores/stores-api.service';
 
+import { ProfileComponent } from './profile/profile.component';
+import { ProfileApiService } from './profile/profile-api.service';
+
 
 const appRoutes: Routes = [
-  { path: 'new-exam', component: ExamFormComponent },
-  { path: '', component: ExamsComponent },
   { path: 'new-store', component: StoreFormComponent },
   { path: 'stores', component: StoresComponent },
   { path: 'callback', component: CallbackComponent },
+  {path: 'profile', component: ProfileComponent },
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    ExamFormComponent,
-    ExamsComponent,
     StoreFormComponent,
     StoresComponent,
+    ProfileComponent,
     CallbackComponent,
   ],
   imports: [
@@ -50,7 +48,7 @@ const appRoutes: Routes = [
     MatCardModule,
     MatInputModule, 
   ],
-  providers: [ExamsApiService, StoresApiService],
+  providers: [StoresApiService, ProfileApiService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
@@ -60,7 +58,7 @@ export class AppModule {
       audience: 'https://online-exam.digituz.com.br',
       clientID: 'Un8JHzEVO5VXfEG4Q15X8OQ3HOnvmeLK',
       redirectUri: 'http://localhost:4200/callback',
-      scope: 'openid profile manage:exams'
+      scope: 'openid profile manage:stores'
     });
   }
 }

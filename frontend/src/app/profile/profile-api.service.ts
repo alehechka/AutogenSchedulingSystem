@@ -3,11 +3,11 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import {API_URL} from '../env';
-import {Exam} from './exam.model';
+import {Profile} from './profile.model';
 import * as Auth0 from 'auth0-web';
 
 @Injectable()
-export class ExamsApiService {
+export class ProfileApiService {
 
   constructor(private http: HttpClient) {
   }
@@ -17,29 +17,34 @@ export class ExamsApiService {
   }
 
   // GET list of public, future events
-  getExams(): Observable<any> {
-    return this.http
-      .get(`${API_URL}/exams`)
-      .catch(ExamsApiService._handleError);
-  }
-
-  saveExam(exam: Exam): Observable<any> {
+  getProfile(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .post(`${API_URL}/exams`, exam, httpOptions);
+      .get(`${API_URL}/employee/${Auth0.getProfile().userId}`, httpOptions)
+      .catch(ProfileApiService._handleError);
   }
 
-  deleteExam(examId: number) {
+  saveProfile(profile: Profile): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .delete(`${API_URL}/exams/${examId}`, httpOptions);
+      .post(`${API_URL}/employee`, profile, httpOptions);
   }
+
+  // deleteStore(storeId: number) {
+  //   const httpOptions = {
+  //     headers: new HttpHeaders({
+  //       'Authorization': `Bearer ${Auth0.getAccessToken()}`
+  //     })
+  //   };
+  //   return this.http
+  //     .delete(`${API_URL}/stores/${storeId}`, httpOptions);
+  // }
 }

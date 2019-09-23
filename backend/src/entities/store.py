@@ -14,14 +14,18 @@ class Store(Entity, Base):
     zip_code = Column(Integer)
     name = Column(String)
     description = Column(String)
+    state = Column(String)
+    city = Column(String)
 
-    def __init__(self, street_address, phone_number, zip_code, name, description, created_by):
+    def __init__(self, street_address, phone_number, zip_code, name, description, state, city, created_by):
         Entity.__init__(self, created_by)
         self.street_address = street_address
         self.phone_number = phone_number
         self.zip_code = zip_code
         self.name = name
         self.description = description
+        self.state = state
+        self.city = city
 
 class StoreSchema(Schema):
     id = fields.Number()
@@ -30,6 +34,8 @@ class StoreSchema(Schema):
     zip_code = fields.Number()
     name = fields.Str()
     description = fields.Str()
+    state = fields.Str()
+    city = fields.Str()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
     last_updated_by = fields.Str()

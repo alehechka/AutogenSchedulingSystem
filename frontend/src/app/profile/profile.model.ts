@@ -1,0 +1,27 @@
+export class Profile {
+    constructor(
+      public monday_start: number,
+      public monday_end: number,
+      public tuesday_start: number,
+      public tuesday_end: number,
+      public wednesday_start: number,
+      public wednesday_end: number,
+      public thursday_start: number,
+      public thursday_end: number,
+      public friday_start: number,
+      public friday_end: number,
+      public saturday_start: number,
+      public saturday_end: number,
+      public sunday_start: number,
+      public sunday_end: number,
+      public number_of_hours: number,
+      public role: string,
+      public auth0_id: string,
+      public start_date?: Date,
+      public end_date?: Date,
+      public _id?: number,
+      public updatedAt?: Date,
+      public createdAt?: Date,
+      public lastUpdatedBy?: string,
+    ) { }
+  }

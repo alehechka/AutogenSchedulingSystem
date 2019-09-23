@@ -3,9 +3,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from .entities.entity import Session, engine, Base
-from .entities.exam import Exam, ExamSchema
 from .entities.store import Store, StoreSchema
-from .auth import AuthError, requires_auth, requires_role, get_user
+from .entities.employee import Employee, EmployeeSchema
+from .auth import AuthError, requires_auth, requires_role
 
 # creating the Flask application
 app = Flask(__name__)
@@ -14,10 +14,53 @@ CORS(app)
 # if needed, generate database schema
 Base.metadata.create_all(engine)
 
-@app.route('/user')
+####### EMPLOYEES ##################################################################################################
+
+@app.route('/employee/<auth0_id>')
 @requires_auth
-def get_user():
-    return auth.get_user
+def get_employee(auth0_id):
+    # fetching from the database
+    session = Session()
+    employee_object = session.query(Employee).filter(Employee.auth0_id == auth0_id)
+
+    # transforming into JSON-serializable objects
+    schema = EmployeeSchema(many=False)
+    employee = schema.dump(employee_object)
+
+    # serializing as JSON
+    session.close()
+    return jsonify(employee)
+
+@app.route('/employee', methods=['POST'], endpoint='add_employee')
+@requires_auth
+def add_employee():
+    # mount store object
+    posted_employee = EmployeeSchema(only=('store_id', 
+                'monday_start', 'monday_end', 
+                'tuesday_start', 'tuesday_end', 
+                'wednesday_start', 'wednesday_end', 
+                'thursday_start', 'thursday_end', 
+                'friday_start', 'friday_end', 
+                'saturday_start', 'saturday_end', 
+                'sunday_start', 'sunday_end', 
+                'number_of_hours', 
+                'start_date', 'end_date', 
+                'role', 'auth0_id')) \
+        .load(request.get_json())
+
+    employee = Employee(**posted_employee, created_by="HTTP post request")
+
+    # persist store
+    session = Session()
+    session.add(employee)
+    session.commit()
+
+    # return created store
+    new_employee = EmployeeSchema().dump(employee)
+    session.close()
+    return jsonify(new_employee), 201
+
+####### STORES ##################################################################################################
 
 @app.route('/stores')
 @requires_auth
@@ -39,7 +82,7 @@ def get_stores():
 @requires_role('admin')
 def add_store():
     # mount store object
-    posted_store = StoreSchema(only=('street_address', 'phone_number', 'zip_code', 'name', 'description')) \
+    posted_store = StoreSchema(only=('street_address', 'phone_number', 'zip_code', 'name', 'description', 'state', 'city')) \
         .load(request.get_json())
 
     store = Store(**posted_store, created_by="HTTP post request")
@@ -54,40 +97,7 @@ def add_store():
     session.close()
     return jsonify(new_store), 201
 
-@app.route('/exams')
-def get_exams():
-    # fetching from the database
-    session = Session()
-    exam_objects = session.query(Exam).all()
-
-    # transforming into JSON-serializable objects
-    schema = ExamSchema(many=True)
-    exams = schema.dump(exam_objects)
-
-    # serializing as JSON
-    session.close()
-    return jsonify(exams)
-
-@app.route('/exams', methods=['POST'])
-@requires_auth
-def add_exam():
-    # mount exam object
-    posted_exam = ExamSchema(only=('title', 'description', 'long_description')) \
-        .load(request.get_json())
-
-    exam = Exam(**posted_exam, created_by="HTTP post request")
-
-    # persist exam
-    session = Session()
-    session.add(exam)
-    session.commit()
-
-    # return created exam
-    new_exam = ExamSchema().dump(exam)
-    session.close()
-    return jsonify(new_exam), 201
-
-@app.route('/exams/<examId>', methods=['DELETE'], endpoint='delete_exam')
+"""@app.route('/exams/<examId>', methods=['DELETE'], endpoint='delete_exam')
 @requires_auth
 @requires_role('admin')
 def delete_exam(examId):
@@ -97,6 +107,7 @@ def delete_exam(examId):
     session.commit()
     session.close()
     return '', 201
+"""
 
 @app.errorhandler(AuthError)
 def handle_auth_error(ex):
