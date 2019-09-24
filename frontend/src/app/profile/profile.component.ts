@@ -4,33 +4,15 @@ import { Subscription } from 'rxjs/Subscription';
 import { Profile } from './profile.model';
 import { ProfileApiService } from './profile-api.service';
 import { UserProfile } from 'auth0-web/src/profile';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'employee',
   template: `
     <h2>{{user.name}}</h2>
     <p>{{user.nickname}}</p>
-    <div class="stores">
-      <mat-card class="example-card" *ngFor="let store of storesList" class="mat-elevation-z5">
-        <mat-card-content>
-          <mat-card-title>{{store.name}}</mat-card-title>
-          <mat-card-subtitle>{{store.description}}</mat-card-subtitle>
-          <p>
-            {{store.streetAddress}}
-          </p>
-          <button mat-raised-button color="accent">Schedule</button>
-          <button mat-button color="warn" *ngIf="isAdmin()"
-                  (click)="delete(store.id)">
-            Delete
-          </button>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <button mat-fab color="primary" *ngIf="isAdmin()"
-            class="new-store" routerLink="/new-store">
-      <i class="material-icons">note_add</i>
-    </button>
     {{user|json}}
+    {{profile}}
   `,
   styleUrls: ['profile.component.css'],
 })
@@ -40,7 +22,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   authenticated = false;
   user: UserProfile;
 
-  constructor(private profileApi: ProfileApiService) { }
+  constructor(private profileApi: ProfileApiService, private router: Router) { }
 
   ngOnInit() {
     this.user = Auth0.getProfile();
@@ -51,6 +33,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
         console.error
       );
+      let profile = {
+        store_id: 1,
+        role: 'employee',
+        auth0_id: Auth0.getProfile().sub,
+        end_date: new Date()
+      }
+      this.profileApi
+        .saveProfile(profile)
+        .subscribe(
+          () => this.router.navigate(['/stores']),
+          error => alert(error.message)
+        );
     const self = this;
     Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
   }

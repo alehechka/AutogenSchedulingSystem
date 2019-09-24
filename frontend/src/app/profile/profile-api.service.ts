@@ -23,8 +23,9 @@ export class ProfileApiService {
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
+    let userId = Auth0.getProfile().sub;
     return this.http
-      .get(`${API_URL}/employee/${Auth0.getProfile().userId}`, httpOptions)
+      .get(`${API_URL}/employee/${userId}`, httpOptions)
       .catch(ProfileApiService._handleError);
   }
 

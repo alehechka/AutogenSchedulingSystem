@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, String, Integer, Float, DateTime, Date, ForeignKey
 from sqlalchemy.orm import relationship
-
+from datetime import datetime
 from .entity import Entity, Base
 from .store import Store
 
@@ -12,38 +12,35 @@ class Employee(Entity, Base):
     __tablename__ = 'employees'
 
     store_id = Column(Integer, ForeignKey('stores.id'))
-    monday_start = Column(Float, nullable=True)
-    monday_end = Column(Float, nullable=True)
-    tuesday_start = Column(Float, nullable=True)
-    tuesday_end = Column(Float, nullable=True)
-    wednesday_start = Column(Float, nullable=True)
-    wednesday_end = Column(Float, nullable=True)
-    thursday_start = Column(Float, nullable=True)
-    thursday_end = Column(Float, nullable=True)
-    friday_start = Column(Float, nullable=True)
-    friday_end = Column(Float, nullable=True)
-    saturday_start = Column(Float, nullable=True)
-    saturday_end = Column(Float, nullable=True)
-    sunday_start = Column(Float, nullable=True)
-    sunday_end = Column(Float, nullable=True)
-    number_of_hours = Column(Float, nullable=False)
+    monday_start = Column(Float, nullable=True, default=0)
+    monday_end = Column(Float, nullable=True, default=0)
+    tuesday_start = Column(Float, nullable=True, default=0)
+    tuesday_end = Column(Float, nullable=True, default=0)
+    wednesday_start = Column(Float, nullable=True, default=0)
+    wednesday_end = Column(Float, nullable=True, default=0)
+    thursday_start = Column(Float, nullable=True, default=0)
+    thursday_end = Column(Float, nullable=True, default=0)
+    friday_start = Column(Float, nullable=True, default=0)
+    friday_end = Column(Float, nullable=True, default=0)
+    saturday_start = Column(Float, nullable=True, default=0)
+    saturday_end = Column(Float, nullable=True, default=0)
+    sunday_start = Column(Float, nullable=True, default=0)
+    sunday_end = Column(Float, nullable=True, default=0)
+    number_of_hours = Column(Float, nullable=False, default=0)
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=True)
     role = Column(String, nullable=False, server_default='employee')#admin, owner, manager, employee
     auth0_id = Column(String)
 
-    def __init__(self, store_id, 
-                monday_start, monday_end, 
-                tuesday_start, tuesday_end, 
-                wednesday_start, wednesday_end, 
-                thursday_start, thursday_end, 
-                friday_start, friday_end, 
-                saturday_start, saturday_end, 
-                sunday_start, sunday_end, 
-                number_of_hours, 
-                start_date, end_date, 
-                role, auth0_id, 
-                created_by):
+    def __init__(self, store_id, end_date, role, auth0_id, created_by,
+                monday_start=0, monday_end=0, 
+                tuesday_start=0, tuesday_end=0, 
+                wednesday_start=0, wednesday_end=0, 
+                thursday_start=0, thursday_end=0, 
+                friday_start=0, friday_end=0, 
+                saturday_start=0, saturday_end=0, 
+                sunday_start=0, sunday_end=0, 
+                number_of_hours=0):
         Entity.__init__(self, created_by)
         self.store_id = store_id
         self.monday_start = monday_start
@@ -61,13 +58,14 @@ class Employee(Entity, Base):
         self.sunday_start = sunday_start
         self.sunday_end = sunday_end
         self.number_of_hours = number_of_hours
-        self.start_date = start_date
+        self.start_date = datetime.now()
         self.end_date = end_date
         self.role = role
         self.auth0_id = auth0_id
 
 class EmployeeSchema(Schema):
     id = fields.Number()
+    store_id = fields.Number()
     monday_start = fields.Number()
     monday_end = fields.Number()
     tuesday_start = fields.Number()

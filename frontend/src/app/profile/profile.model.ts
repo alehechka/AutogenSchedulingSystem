@@ -1,5 +1,6 @@
 export class Profile {
     constructor(
+      public store_id: number,
       public monday_start: number,
       public monday_end: number,
       public tuesday_start: number,

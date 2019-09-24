@@ -1,6 +1,6 @@
 import * as Auth0 from 'auth0-web';
 import {Component, OnInit} from '@angular/core';
-import {StoresApiService} from "./profile-api.service";
+import {ProfileApiService} from "./profile-api.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -62,40 +62,11 @@ export class StoreFormComponent implements OnInit {
     description: '',
   };
 
-  constructor(private storesApi: StoresApiService, private router: Router) { }
+  constructor(private profileApi: ProfileApiService, private router: Router) { }
 
   ngOnInit() {
     const self = this;
     Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
-  }
-
-  updateStreetAddress(event: any) {
-    this.store.street_address = event.target.value;
-  }
-
-  updatePhoneNumber(event: any) {
-    this.store.phone_number = event.target.value;
-  }
-
-  updateZipCode(event: any) {
-    this.store.zip_code = event.target.value;
-  }
-
-  updateName(event: any) {
-    this.store.name = event.target.value;
-  }
-
-  updateDescription(event: any) {
-    this.store.description = event.target.value;
-  }
-
-  saveStore() {
-    this.storesApi
-      .saveStore(this.store)
-      .subscribe(
-        () => this.router.navigate(['/stores']),
-        error => alert(error.message)
-      );
   }
 
   isAdmin() {
