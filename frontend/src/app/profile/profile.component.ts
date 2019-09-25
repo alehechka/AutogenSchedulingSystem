@@ -35,9 +35,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       );
       let profile = {
         store_id: 1,
-        role: 'employee',
-        auth0_id: Auth0.getProfile().sub,
-        end_date: new Date()
+        auth0_id: Auth0.getProfile().sub
       }
       this.profileApi
         .saveProfile(profile)

@@ -30,9 +30,9 @@ class Employee(Entity, Base):
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=True)
     role = Column(String, nullable=False, server_default='employee')#admin, owner, manager, employee
-    auth0_id = Column(String)
+    auth0_id = Column(String, unique=True)
 
-    def __init__(self, store_id, end_date, role, auth0_id, created_by,
+    def __init__(self, store_id, auth0_id, created_by, end_date=None, role='employee',
                 monday_start=0, monday_end=0, 
                 tuesday_start=0, tuesday_end=0, 
                 wednesday_start=0, wednesday_end=0, 
