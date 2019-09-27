@@ -15,7 +15,7 @@ import { ProfileApiService } from './profile/profile-api.service';
       <span class="fill-remaining-space"></span>
       <button mat-button (click)="goProfile()" *ngIf="authenticated">Profile</button>
       <button mat-button (click)="signIn();" *ngIf="!authenticated">Sign In</button>
-      <button mat-button (click)="signOut()" *ngIf="authenticated">Sign Out</button>
+      <button mat-button (click)="signOut(); goHome();" *ngIf="authenticated">Sign Out</button>
     </mat-toolbar>
 
     <div class="view-container">

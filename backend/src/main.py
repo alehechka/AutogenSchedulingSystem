@@ -24,7 +24,7 @@ def get_employee(auth0_id):
     employee_object = session.query(Employee).filter(Employee.auth0_id == auth0_id)
 
     # transforming into JSON-serializable objects
-    schema = EmployeeSchema(many=False)
+    schema = EmployeeSchema(many=True)
     employee = schema.dump(employee_object)
 
     # serializing as JSON

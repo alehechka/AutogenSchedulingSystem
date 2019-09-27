@@ -4,15 +4,17 @@ import { Subscription } from 'rxjs/Subscription';
 import { Profile } from './profile.model';
 import { ProfileApiService } from './profile-api.service';
 import { UserProfile } from 'auth0-web/src/profile';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'employee',
   template: `
     <h2>{{user.name}}</h2>
-    <p>{{user.nickname}}</p>
+    <p>{{user.email}}</p>
     {{user|json}}
-    {{profile}}
+    <br><br>
+    {{profileList|json}}
+    <br><br>
   `,
   styleUrls: ['profile.component.css'],
 })
@@ -26,23 +28,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.user = Auth0.getProfile();
-    this.profileListSubs = this.profileApi
-      .getProfile()
-      .subscribe(res => {
-        this.profileList = res;
-      },
-        console.error
-      );
-      let profile = {
-        store_id: 1,
-        auth0_id: Auth0.getProfile().sub
-      }
-      this.profileApi
-        .saveProfile(profile)
-        .subscribe(
-          () => this.router.navigate(['/stores']),
-          error => alert(error.message)
-        );
+    this.getUserProfile();
     const self = this;
     Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
   }
@@ -51,24 +37,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.profileListSubs.unsubscribe();
   }
 
-  // delete(storeId: number) {
-  //   this.profileApi
-  //     .deleteStore(storeId)
-  //     .subscribe(() => {
-  //       this.profileListSubs = this.profileApi
-  //         .getProfile()
-  //         .subscribe(res => {
-  //             this.profileList = res;
-  //           },
-  //           console.error
-  //         )
-  //     }, console.error);
-  // }
-
   isAdmin() {
     if (!Auth0.isAuthenticated()) return false;
 
-    const roles = Auth0.getProfile()['https://online-exams.com/roles'];
+    const roles = this.user['https://online-exams.com/roles'];
     return roles.includes('admin');
+  }
+  getUserProfile() {
+    this.profileListSubs = this.profileApi
+      .getProfile()
+      .subscribe(res => {
+        this.profileList = res;
+        if (this.profileList.length === 0) {
+          this.createInitalDbProfile();
+        }
+      },
+        console.error
+      );
+  }
+
+  createInitalDbProfile() {
+    let profile = {
+      store_id: 1,
+      auth0_id: Auth0.getProfile().sub,
+      role: this.user['https://online-exams.com/roles'][0],
+      monday_start: null,
+      monday_end: null,
+    }
+    this.profileApi
+      .saveProfile(profile)
+      .subscribe(
+        () => this.getUserProfile(),
+        error => alert(error.message)
+      );
   }
 }

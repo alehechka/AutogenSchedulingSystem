@@ -25,7 +25,7 @@ const appRoutes: Routes = [
   { path: 'new-store', component: StoreFormComponent },
   { path: 'stores', component: StoresComponent },
   { path: 'callback', component: CallbackComponent },
-  {path: 'profile', component: ProfileComponent },
+  { path: 'profile', component: ProfileComponent },
 ];
 
 @NgModule({
@@ -46,7 +46,7 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule, 
+    MatInputModule,
   ],
   providers: [StoresApiService, ProfileApiService, ],
   bootstrap: [AppComponent]

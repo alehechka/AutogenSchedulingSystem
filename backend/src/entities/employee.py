@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from sqlalchemy import Column, String, Integer, Float, DateTime, Date, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, DateTime, Date, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .entity import Entity, Base
@@ -12,21 +12,21 @@ class Employee(Entity, Base):
     __tablename__ = 'employees'
 
     store_id = Column(Integer, ForeignKey('stores.id'))
-    monday_start = Column(Float, nullable=True, default=0)
-    monday_end = Column(Float, nullable=True, default=0)
-    tuesday_start = Column(Float, nullable=True, default=0)
-    tuesday_end = Column(Float, nullable=True, default=0)
-    wednesday_start = Column(Float, nullable=True, default=0)
-    wednesday_end = Column(Float, nullable=True, default=0)
-    thursday_start = Column(Float, nullable=True, default=0)
-    thursday_end = Column(Float, nullable=True, default=0)
-    friday_start = Column(Float, nullable=True, default=0)
-    friday_end = Column(Float, nullable=True, default=0)
-    saturday_start = Column(Float, nullable=True, default=0)
-    saturday_end = Column(Float, nullable=True, default=0)
-    sunday_start = Column(Float, nullable=True, default=0)
-    sunday_end = Column(Float, nullable=True, default=0)
-    number_of_hours = Column(Float, nullable=False, default=0)
+    monday_start = Column(Float, CheckConstraint('monday_start>=0 AND monday_start<=24'), nullable=True, default=0)
+    monday_end = Column(Float, CheckConstraint('monday_end>=0 AND monday_end<=24'), nullable=True, default=0)
+    tuesday_start = Column(Float, CheckConstraint('tuesday_start>=0 AND tuesday_start<=24'), nullable=True, default=0)
+    tuesday_end = Column(Float, CheckConstraint('tuesday_end>=0 AND tuesday_end<=24'), nullable=True, default=0)
+    wednesday_start = Column(Float, CheckConstraint('wednesday_start>=0 AND wednesday_start<=24'), nullable=True, default=0)
+    wednesday_end = Column(Float, CheckConstraint('wednesday_end>=0 AND wednesday_end<=24'), nullable=True, default=0)
+    thursday_start = Column(Float, CheckConstraint('thursday_start>=0 AND thursday_start<=24'), nullable=True, default=0)
+    thursday_end = Column(Float, CheckConstraint('thursday_end>=0 AND thursday_end<=24'), nullable=True, default=0)
+    friday_start = Column(Float, CheckConstraint('friday_start>=0 AND friday_start<=24'), nullable=True, default=0)
+    friday_end = Column(Float, CheckConstraint('friday_end>=0 AND friday_end<=24'), nullable=True, default=0)
+    saturday_start = Column(Float, CheckConstraint('saturday_start>=0 AND saturday_start<=24'), nullable=True, default=0)
+    saturday_end = Column(Float, CheckConstraint('saturday_end>=0 AND saturday_end<=24'), nullable=True, default=0)
+    sunday_start = Column(Float, CheckConstraint('sunday_start>=0 AND sunday_start<=24'), nullable=True, default=0)
+    sunday_end = Column(Float, CheckConstraint('sunday_end>=0 AND sunday_end<=24'), nullable=True, default=0)
+    number_of_hours = Column(Float, CheckConstraint('monday_start>=0 AND monday_start<=40'), nullable=False, default=0)
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=True)
     role = Column(String, nullable=False, server_default='employee')#admin, owner, manager, employee

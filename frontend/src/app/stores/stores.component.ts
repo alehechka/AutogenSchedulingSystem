@@ -30,7 +30,6 @@ import { UserProfile } from 'auth0-web/src/profile';
             class="new-store" routerLink="/new-store">
       <i class="material-icons">note_add</i>
     </button>
-    {{user|json}}
   `,
   styleUrls: ['stores.component.css'],
 })
@@ -43,7 +42,6 @@ export class StoresComponent implements OnInit, OnDestroy {
   constructor(private storesApi: StoresApiService) { }
 
   ngOnInit() {
-    this.user = Auth0.getProfile();
     this.storesListSubs = this.storesApi
       .getStores()
       .subscribe(res => {
