@@ -10,7 +10,7 @@ class Store(Entity, Base):
     __tablename__ = 'stores'
 
     street_address = Column(String)
-    phone_number = Column(String)
+    phone_number = Column(Integer)
     zip_code = Column(Integer)
     name = Column(String)
     description = Column(String)
@@ -30,7 +30,7 @@ class Store(Entity, Base):
 class StoreSchema(Schema):
     id = fields.Number()
     street_address = fields.Str()
-    phone_number = fields.Str()
+    phone_number = fields.Number()
     zip_code = fields.Number()
     name = fields.Str()
     description = fields.Str()

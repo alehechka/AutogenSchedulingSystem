@@ -16,7 +16,7 @@ Base.metadata.create_all(engine)
 
 ####### EMPLOYEES ##################################################################################################
 
-@app.route('/employee/<auth0_id>')
+@app.route('/employee/<auth0_id>' methods=['GET'])
 @requires_auth
 def get_employee(auth0_id):
     # fetching from the database
@@ -60,9 +60,40 @@ def add_employee():
     session.close()
     return jsonify(new_employee), 201
 
+@app.route('/employee/<auth0_id>', methods=['POST'], endpoint='update_employee')
+@requires_auth
+def update_employee():
+    # mount store object
+    posted_employee = EmployeeSchema(only=('store_id', 
+                'monday_start', 'monday_end', 
+                'tuesday_start', 'tuesday_end', 
+                'wednesday_start', 'wednesday_end', 
+                'thursday_start', 'thursday_end', 
+                'friday_start', 'friday_end', 
+                'saturday_start', 'saturday_end', 
+                'sunday_start', 'sunday_end', 
+                'number_of_hours', 
+                'start_date', 'end_date', 
+                'role', 'auth0_id')) \
+        .load(request.get_json())
+
+    employee = Employee(**posted_employee, created_by="HTTP post request")
+
+    # persist employee
+    session = Session()
+    session.update(Employee).\
+        where(Employee.auth0_id = auth0_id).\
+        values(employee)
+    session.commit()
+
+    # return updated employee
+    updated_employee = EmployeeSchema().dump(employee)
+    session.close()
+    return jsonify(updated_employee), 201
+
 ####### STORES ##################################################################################################
 
-@app.route('/stores')
+@app.route('/stores', methods=['GET'])
 @requires_auth
 def get_stores():
     # fetching from the database

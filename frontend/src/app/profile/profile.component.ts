@@ -60,9 +60,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let profile = {
       store_id: 1,
       auth0_id: Auth0.getProfile().sub,
-      role: this.user['https://online-exams.com/roles'][0],
-      monday_start: null,
-      monday_end: null,
+      role: this.user['https://online-exams.com/roles'][0]
     }
     this.profileApi
       .saveProfile(profile)

@@ -56,7 +56,7 @@ export class StoreFormComponent implements OnInit {
   authenticated = false;
   store = {
     street_address: '',
-    phone_number: '',
+    phone_number: null,
     zip_code: null,
     name: '',
     description: '',
