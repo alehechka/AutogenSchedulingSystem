@@ -112,7 +112,7 @@ def requires_role(required_role):
         def wrapper(**args):
             token = get_token_auth_header()
             unverified_claims = jwt.get_unverified_claims(token)
-
+            print(unverified_claims)
             # search current token for the expected role
             if unverified_claims.get('https://online-exams.com/roles'):
                 roles = unverified_claims['https://online-exams.com/roles']

@@ -16,15 +16,15 @@ Base.metadata.create_all(engine)
 
 ####### EMPLOYEES ##################################################################################################
 
-@app.route('/employee/<auth0_id>' methods=['GET'])
+@app.route('/employee/<auth0_id>', methods=['GET'])
 @requires_auth
 def get_employee(auth0_id):
     # fetching from the database
     session = Session()
-    employee_object = session.query(Employee).filter(Employee.auth0_id == auth0_id)
+    employee_object = session.query(Employee).filter(Employee.auth0_id == auth0_id).first()
 
     # transforming into JSON-serializable objects
-    schema = EmployeeSchema(many=True)
+    schema = EmployeeSchema(many=False)
     employee = schema.dump(employee_object)
 
     # serializing as JSON
@@ -60,9 +60,10 @@ def add_employee():
     session.close()
     return jsonify(new_employee), 201
 
-@app.route('/employee/<auth0_id>', methods=['POST'], endpoint='update_employee')
+@app.route('/employee/update-hours/<auth0_id>', methods=['POST'], endpoint='update_employee')
 @requires_auth
-def update_employee():
+#@requires_role('employee')
+def update_employee(auth0_id):
     # mount store object
     posted_employee = EmployeeSchema(only=('store_id', 
                 'monday_start', 'monday_end', 
@@ -72,18 +73,16 @@ def update_employee():
                 'friday_start', 'friday_end', 
                 'saturday_start', 'saturday_end', 
                 'sunday_start', 'sunday_end', 
-                'number_of_hours', 
-                'start_date', 'end_date', 
-                'role', 'auth0_id')) \
+                'number_of_hours', 'auth0_id')) \
         .load(request.get_json())
 
-    employee = Employee(**posted_employee, created_by="HTTP post request")
+    request_employee = Employee(**posted_employee, created_by="HTTP post request")
 
     # persist employee
     session = Session()
-    session.update(Employee).\
-        where(Employee.auth0_id = auth0_id).\
-        values(employee)
+    employee = session.query(Employee).filter(Employee.auth0_id == auth0_id).first()
+    print(request_employee.monday_start)
+    employee.monday_end = request_employee.monday_end
     session.commit()
 
     # return updated employee

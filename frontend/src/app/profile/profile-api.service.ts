@@ -39,6 +39,17 @@ export class ProfileApiService {
       .post(`${API_URL}/employee`, profile, httpOptions);
   }
 
+  updateProfile(profile: Profile): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    let userId = Auth0.getProfile().sub;
+    return this.http
+      .post(`${API_URL}/employee/update-hours/${userId}`, profile, httpOptions);
+  }
+
   // deleteStore(storeId: number) {
   //   const httpOptions = {
   //     headers: new HttpHeaders({

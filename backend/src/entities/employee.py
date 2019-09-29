@@ -63,6 +63,7 @@ class Employee(Entity, Base):
         self.role = role
         self.auth0_id = auth0_id
 
+
 class EmployeeSchema(Schema):
     id = fields.Number()
     store_id = fields.Number()
@@ -88,3 +89,4 @@ class EmployeeSchema(Schema):
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
     last_updated_by = fields.Str()
+

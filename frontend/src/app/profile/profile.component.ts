@@ -15,6 +15,7 @@ import { Router } from "@angular/router";
     <br><br>
     {{profileList|json}}
     <br><br>
+    <button (click)="updateProfile()">Update</button>
   `,
   styleUrls: ['profile.component.css'],
 })
@@ -64,6 +65,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
     this.profileApi
       .saveProfile(profile)
+      .subscribe(
+        () => this.getUserProfile(),
+        error => alert(error.message)
+      );
+  }
+
+  updateProfile() {
+    let profile = {
+      store_id: 1,
+      auth0_id: Auth0.getProfile().sub,
+      
+    }
+    this.profileApi
+      .updateProfile(profile)
       .subscribe(
         () => this.getUserProfile(),
         error => alert(error.message)
