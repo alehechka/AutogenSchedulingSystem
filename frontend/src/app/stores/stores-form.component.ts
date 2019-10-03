@@ -27,9 +27,27 @@ import {Router} from "@angular/router";
         </mat-form-field>
 
         <mat-form-field class="full-width">
+          <input matInput
+                    placeholder="City"
+                    (keyup)="updateCity($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input matInput
+                    placeholder="State"
+                    (keyup)="updateState($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
           <input type="number" matInput
                     placeholder="Zip Code"
                     (keyup)="updateZipCode($event)">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input type="number" matInput
+                    placeholder="Phone Number"
+                    (keyup)="updatePhoneNumber($event)">
         </mat-form-field>
 
         <button mat-raised-button
@@ -60,6 +78,8 @@ export class StoreFormComponent implements OnInit {
     zip_code: null,
     name: '',
     description: '',
+    city: '',
+    state: '',
   };
 
   constructor(private storesApi: StoresApiService, private router: Router) { }
@@ -87,6 +107,14 @@ export class StoreFormComponent implements OnInit {
 
   updateDescription(event: any) {
     this.store.description = event.target.value;
+  }
+
+  updateCity(event: any) {
+    this.store.city = event.target.value;
+  }
+
+  updateState(event: any) {
+    this.store.state = event.target.value;
   }
 
   saveStore() {

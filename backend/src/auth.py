@@ -112,7 +112,6 @@ def requires_role(required_role):
         def wrapper(**args):
             token = get_token_auth_header()
             unverified_claims = jwt.get_unverified_claims(token)
-            print(unverified_claims)
             # search current token for the expected role
             if unverified_claims.get('https://online-exams.com/roles'):
                 roles = unverified_claims['https://online-exams.com/roles']
@@ -128,3 +127,25 @@ def requires_role(required_role):
         return wrapper
 
     return decorator
+
+"""def requires_user(auth0_id):
+    def decorator(f):
+        def wrapper(**args):
+            token = get_token_auth_header()
+            unverified_claims = jwt.get_unverified_claims(token)
+            print(unverified_claims)
+            # search current token for the expected role
+            if unverified_claims.get('sub'):
+                thisAuth0_id = unverified_claims['sub']
+                if thisAuth0_id == auth0_id:
+                    return f(**args)
+
+            raise AuthError({
+                'code': 'incorrect_user',
+                'description': 'You do are not the correct user to perform this operation.'
+            }, 401)
+
+        return wrapper
+
+    return decorator
+"""

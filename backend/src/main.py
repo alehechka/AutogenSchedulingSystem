@@ -5,7 +5,7 @@ from flask_cors import CORS
 from .entities.entity import Session, engine, Base
 from .entities.store import Store, StoreSchema
 from .entities.employee import Employee, EmployeeSchema
-from .auth import AuthError, requires_auth, requires_role
+from .auth import AuthError, requires_auth, requires_role#, requires_user
 
 # creating the Flask application
 app = Flask(__name__)
@@ -62,7 +62,7 @@ def add_employee():
 
 @app.route('/employee/update-hours/<auth0_id>', methods=['POST'], endpoint='update_employee')
 @requires_auth
-#@requires_role('employee')
+#@requires_user(request.get_json().auth0_id)
 def update_employee(auth0_id):
     # mount store object
     posted_employee = EmployeeSchema(only=('store_id', 
@@ -81,8 +81,21 @@ def update_employee(auth0_id):
     # persist employee
     session = Session()
     employee = session.query(Employee).filter(Employee.auth0_id == auth0_id).first()
-    print(request_employee.monday_start)
+    employee.monday_start = request_employee.monday_start
     employee.monday_end = request_employee.monday_end
+    employee.tuesday_start = request_employee.tuesday_start
+    employee.tuesday_end = request_employee.tuesday_end
+    employee.wednesday_start = request_employee.wednesday_start
+    employee.wednesday_end = request_employee.wednesday_end
+    employee.thursday_start = request_employee.thursday_start
+    employee.thursday_end = request_employee.thursday_end
+    employee.friday_start = request_employee.friday_start
+    employee.friday_end = request_employee.friday_end
+    employee.saturday_start = request_employee.saturday_start
+    employee.saturday_end = request_employee.saturday_end
+    employee.sunday_start = request_employee.sunday_start
+    employee.sunday_end = request_employee.sunday_end
+    employee.number_of_hours = request_employee.number_of_hours
     session.commit()
 
     # return updated employee
