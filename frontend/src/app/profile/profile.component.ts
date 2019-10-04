@@ -50,57 +50,6 @@ ngOnDestroy() {
   this.profileListSubs.unsubscribe();
 }
 
-updateHour(event: any, time: string) {
-  switch (time) {
-    case 'monday_start':
-      this.tempProfile.monday_start = parseFloat(event.target.value);
-      break;
-    case 'monday_end':
-      this.tempProfile.monday_end = parseFloat(event.target.value);
-      break;
-    case 'tuesday_start':
-      this.tempProfile.tuesday_start = parseFloat(event.target.value);
-      break;
-    case 'tuesday_end':
-      this.tempProfile.tuesday_end = parseFloat(event.target.value);
-      break;
-    case 'wednesday_start':
-      this.tempProfile.wednesday_start = parseFloat(event.target.value);
-      break;
-    case 'wednesday_end':
-      this.tempProfile.wednesday_end = parseFloat(event.target.value);
-      break;
-    case 'thursday_start':
-      this.tempProfile.thursday_start = parseFloat(event.target.value);
-      break;
-    case 'thursday_end':
-      this.tempProfile.thursday_end = parseFloat(event.target.value);
-      break;
-    case 'friday_start':
-      this.tempProfile.friday_start = parseFloat(event.target.value);
-      break;
-    case 'friday_end':
-      this.tempProfile.friday_end = parseFloat(event.target.value);
-      break;
-    case 'saturday_start':
-      this.tempProfile.saturday_start = parseFloat(event.target.value);
-      break;
-    case 'saturday_end':
-      this.tempProfile.saturday_end = parseFloat(event.target.value);
-      break;
-    case 'sunday_start':
-      this.tempProfile.sunday_start = parseFloat(event.target.value);
-      break;
-    case 'sunday_end':
-      this.tempProfile.sunday_end = parseFloat(event.target.value);
-      break;
-    case 'number_of_hours':
-      this.tempProfile.number_of_hours = parseFloat(event.target.value);
-      break;
-
-  }
-}
-
 isAdmin() {
   if (!Auth0.isAuthenticated()) return false;
 
