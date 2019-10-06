@@ -24,7 +24,7 @@ export class StoresApiService {
       })
     };
     return this.http
-      .get(`${API_URL}/stores`, httpOptions)
+      .get(`${API_URL}/stores/get`, httpOptions)
       .catch(StoresApiService._handleError);
   }
 
@@ -35,7 +35,7 @@ export class StoresApiService {
       })
     };
     return this.http
-      .post(`${API_URL}/stores`, store, httpOptions);
+      .post(`${API_URL}/stores/add`, store, httpOptions);
   }
 
   deleteStore(storeId: number) {
@@ -45,6 +45,6 @@ export class StoresApiService {
       })
     };
     return this.http
-      .delete(`${API_URL}/stores/${storeId}`, httpOptions);
+      .delete(`${API_URL}/stores/delete/${storeId}`, httpOptions);
   }
 }

@@ -1,9 +1,9 @@
 # coding=utf-8
 
 from sqlalchemy import Column, String, Integer, DateTime
-
-from .entity import Entity, Base
-
+from flask import Blueprint, jsonify, request
+from .entity import Entity, Base, Session
+from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
 
 class Store(Entity, Base):
@@ -39,3 +39,53 @@ class StoreSchema(Schema):
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
     last_updated_by = fields.Str()
+
+####### FLASK ENDPOINTS ##################################################################################################
+
+blueprint = Blueprint('stores', __name__)
+
+@blueprint.route('/get', methods=['GET'])
+@requires_auth
+def get_stores():
+    # fetching from the database
+    session = Session()
+    store_objects = session.query(Store).all()
+
+    # transforming into JSON-serializable objects
+    schema = StoreSchema(many=True)
+    stores = schema.dump(store_objects)
+
+    # serializing as JSON
+    session.close()
+    return jsonify(stores)
+
+@blueprint.route('/add', methods=['POST'], endpoint='add_store')
+@requires_auth
+@requires_role('admin')
+def add_store():
+    # mount store object
+    posted_store = StoreSchema(only=('street_address', 'phone_number', 'zip_code', 'name', 'description', 'state', 'city')) \
+        .load(request.get_json())
+
+    store = Store(**posted_store, created_by="HTTP post request")
+
+    # persist store
+    session = Session()
+    session.add(store)
+    session.commit()
+
+    # return created store
+    new_store = StoreSchema().dump(store)
+    session.close()
+    return jsonify(new_store), 201
+
+@blueprint.route('/delete/<store_id>', methods=['DELETE'], endpoint='delete_store')
+@requires_auth
+@requires_role('admin')
+def delete_store(store_id):
+    session = Session()
+    store = session.query(Store).filter_by(id=store_id).first()
+    session.delete(store)
+    session.commit()
+    session.close()
+    return '', 201

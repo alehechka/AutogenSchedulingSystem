@@ -3,9 +3,10 @@
 from sqlalchemy import Column, String, Integer, Float, DateTime, Date, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from .entity import Entity, Base
 from .store import Store
-
+from flask import Blueprint, jsonify, request
+from .entity import Entity, Base, Session
+from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
 
 class Employee(Entity, Base):
@@ -90,3 +91,93 @@ class EmployeeSchema(Schema):
     updated_at = fields.DateTime()
     last_updated_by = fields.Str()
 
+####### FLASK ENDPOINTS ##################################################################################################
+
+blueprint = Blueprint('employees', __name__)
+
+@blueprint.route('/get/<auth0_id>', methods=['GET'])
+@requires_auth
+def get_employee(auth0_id):
+    # fetching from the database
+    session = Session()
+    employee_object = session.query(Employee).filter(Employee.auth0_id == auth0_id).first()
+
+    # transforming into JSON-serializable objects
+    schema = EmployeeSchema(many=False)
+    employee = schema.dump(employee_object)
+
+    # serializing as JSON
+    session.close()
+    return jsonify(employee)
+
+@blueprint.route('/add', methods=['POST'], endpoint='add_employee')
+@requires_auth
+def add_employee():
+    # mount store object
+    posted_employee = EmployeeSchema(only=('store_id', 
+                'monday_start', 'monday_end', 
+                'tuesday_start', 'tuesday_end', 
+                'wednesday_start', 'wednesday_end', 
+                'thursday_start', 'thursday_end', 
+                'friday_start', 'friday_end', 
+                'saturday_start', 'saturday_end', 
+                'sunday_start', 'sunday_end', 
+                'number_of_hours', 
+                'start_date', 'end_date', 
+                'role', 'auth0_id')) \
+        .load(request.get_json())
+
+    employee = Employee(**posted_employee, created_by="HTTP post request")
+
+    # persist store
+    session = Session()
+    session.add(employee)
+    session.commit()
+
+    # return created store
+    new_employee = EmployeeSchema().dump(employee)
+    session.close()
+    return jsonify(new_employee), 201
+
+@blueprint.route('/update-hours/<auth0_id>', methods=['POST'], endpoint='update_employee')
+@requires_auth
+#@requires_user(request.get_json().auth0_id)
+def update_employee(auth0_id):
+    # mount store object
+    posted_employee = EmployeeSchema(only=('store_id', 
+                'monday_start', 'monday_end', 
+                'tuesday_start', 'tuesday_end', 
+                'wednesday_start', 'wednesday_end', 
+                'thursday_start', 'thursday_end', 
+                'friday_start', 'friday_end', 
+                'saturday_start', 'saturday_end', 
+                'sunday_start', 'sunday_end', 
+                'number_of_hours', 'auth0_id')) \
+        .load(request.get_json())
+
+    request_employee = Employee(**posted_employee, created_by="HTTP post request")
+
+    # persist employee
+    session = Session()
+    employee = session.query(Employee).filter(Employee.auth0_id == auth0_id).first()
+    employee.monday_start = request_employee.monday_start
+    employee.monday_end = request_employee.monday_end
+    employee.tuesday_start = request_employee.tuesday_start
+    employee.tuesday_end = request_employee.tuesday_end
+    employee.wednesday_start = request_employee.wednesday_start
+    employee.wednesday_end = request_employee.wednesday_end
+    employee.thursday_start = request_employee.thursday_start
+    employee.thursday_end = request_employee.thursday_end
+    employee.friday_start = request_employee.friday_start
+    employee.friday_end = request_employee.friday_end
+    employee.saturday_start = request_employee.saturday_start
+    employee.saturday_end = request_employee.saturday_end
+    employee.sunday_start = request_employee.sunday_start
+    employee.sunday_end = request_employee.sunday_end
+    employee.number_of_hours = request_employee.number_of_hours
+    session.commit()
+
+    # return updated employee
+    updated_employee = EmployeeSchema().dump(employee)
+    session.close()
+    return jsonify(updated_employee), 201

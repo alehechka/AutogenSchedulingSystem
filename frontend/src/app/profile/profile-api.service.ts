@@ -25,7 +25,7 @@ export class ProfileApiService {
     };
     let userId = Auth0.getProfile().sub;
     return this.http
-      .get(`${API_URL}/employee/${userId}`, httpOptions)
+      .get(`${API_URL}/employee/get/${userId}`, httpOptions)
       .catch(ProfileApiService._handleError);
   }
 
@@ -36,7 +36,7 @@ export class ProfileApiService {
       })
     };
     return this.http
-      .post(`${API_URL}/employee`, profile, httpOptions);
+      .post(`${API_URL}/employee/add`, profile, httpOptions);
   }
 
   updateProfile(profile: Profile): Observable<any> {
