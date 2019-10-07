@@ -20,12 +20,16 @@ import { StoresApiService } from './stores/stores-api.service';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileApiService } from './profile/profile-api.service';
 
+import { DepartmentComponent } from './stores/departments/departments.component';
+import { DepartmentApiService } from './stores/departments/departments-api.service'
+
 
 const appRoutes: Routes = [
   { path: 'new-store', component: StoreFormComponent },
   { path: 'stores', component: StoresComponent },
   { path: 'callback', component: CallbackComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'department/:store_id', component: DepartmentComponent }
 ];
 
 @NgModule({
@@ -34,6 +38,7 @@ const appRoutes: Routes = [
     StoreFormComponent,
     StoresComponent,
     ProfileComponent,
+    DepartmentComponent,
     CallbackComponent,
   ],
   imports: [
@@ -49,7 +54,7 @@ const appRoutes: Routes = [
     MatInputModule,
     FormsModule,
   ],
-  providers: [StoresApiService, ProfileApiService, ],
+  providers: [StoresApiService, ProfileApiService, DepartmentApiService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
