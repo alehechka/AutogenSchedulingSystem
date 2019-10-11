@@ -32,85 +32,86 @@ export class ProfileComponent implements OnInit, OnDestroy {
     sunday_start: number,
     sunday_end: number,
     number_of_hours: number,
-};
-authenticated = false;
-profileHasArrived = false;
-user: UserProfile;
+  };
+  authenticated = false;
+  profileHasArrived = false;
+  user: UserProfile;
 
-constructor(private profileApi: ProfileApiService, private router: Router) { }
+  constructor(private profileApi: ProfileApiService, private router: Router) { }
 
-ngOnInit() {
-  this.user = Auth0.getProfile();
-  this.getUserProfile();
-  const self = this;
-  Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
-}
-
-ngOnDestroy() {
-  this.profileListSubs.unsubscribe();
-}
-
-isAdmin() {
-  if (!Auth0.isAuthenticated()) return false;
-
-  const roles = this.user['https://online-exams.com/roles'];
-  return roles.includes('admin');
-}
-
-getUserProfile() {
-  this.profileListSubs = this.profileApi
-    .getProfile()
-    .subscribe(res => {
-      this.profile = res;
-      if (typeof this.profile.auth0_id === 'undefined') {
-        this.createInitalDbProfile();
-      } else {
-        this.profileHasArrived = true;
-        this.tempProfile = {
-          store_id: this.profile.store_id,
-          auth0_id: this.profile.auth0_id,
-          monday_start: this.profile.monday_start,
-          monday_end: this.profile.monday_end,
-          tuesday_start: this.profile.tuesday_start,
-          tuesday_end: this.profile.tuesday_end,
-          wednesday_start: this.profile.wednesday_start,
-          wednesday_end: this.profile.wednesday_end,
-          thursday_start: this.profile.thursday_start,
-          thursday_end: this.profile.thursday_end,
-          friday_start: this.profile.friday_start,
-          friday_end: this.profile.friday_end,
-          saturday_start: this.profile.saturday_start,
-          saturday_end: this.profile.saturday_end,
-          sunday_start: this.profile.sunday_start,
-          sunday_end: this.profile.sunday_end,
-          number_of_hours: this.profile.number_of_hours,
-        }
-      }
-    },
-      console.error
-    );
-}
-
-createInitalDbProfile() {
-  let profile = {
-    store_id: 1,
-    auth0_id: Auth0.getProfile().sub,
-    role: this.user['https://online-exams.com/roles'][0]
+  ngOnInit() {
+    this.user = Auth0.getProfile();
+    this.getUserProfile();
+    const self = this;
+    Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
   }
-  this.profileApi
-    .saveProfile(profile)
-    .subscribe(
-      () => this.getUserProfile(),
-      error => alert(error.message)
-    );
-}
 
-updateProfile() {
-  this.profileApi
-    .updateProfile(this.tempProfile)
-    .subscribe(
-      () => this.getUserProfile(),
-      error => alert(error.message)
-    );
-}
+  ngOnDestroy() {
+    this.profileListSubs.unsubscribe();
+  }
+
+  isAdmin() {
+    if (!Auth0.isAuthenticated()) return false;
+
+    const roles = this.user['https://online-exams.com/roles'];
+    return roles.includes('admin');
+  }
+
+  getUserProfile() {
+    this.profileListSubs = this.profileApi
+      .getProfile()
+      .subscribe(res => {
+        this.profile = res;
+        if (typeof this.profile.auth0_id === 'undefined') {
+          this.createInitalDbProfile();
+        } else {
+          this.profileHasArrived = true;
+          this.tempProfile = {
+            store_id: this.profile.store_id,
+            auth0_id: this.profile.auth0_id,
+            monday_start: this.profile.monday_start,
+            monday_end: this.profile.monday_end,
+            tuesday_start: this.profile.tuesday_start,
+            tuesday_end: this.profile.tuesday_end,
+            wednesday_start: this.profile.wednesday_start,
+            wednesday_end: this.profile.wednesday_end,
+            thursday_start: this.profile.thursday_start,
+            thursday_end: this.profile.thursday_end,
+            friday_start: this.profile.friday_start,
+            friday_end: this.profile.friday_end,
+            saturday_start: this.profile.saturday_start,
+            saturday_end: this.profile.saturday_end,
+            sunday_start: this.profile.sunday_start,
+            sunday_end: this.profile.sunday_end,
+            number_of_hours: this.profile.number_of_hours,
+          }
+        }
+      },
+        console.error
+      );
+  }
+
+  createInitalDbProfile() {
+    let profile = {
+      store_id: 1,
+      auth0_id: Auth0.getProfile().sub,
+      role: this.user['https://online-exams.com/roles'][0]
+    }
+    this.profileApi
+      .saveProfile(profile)
+      .subscribe(
+        () => this.getUserProfile(),
+        error => alert(error.message)
+      );
+  }
+
+  updateProfile() {
+    this.profileApi
+      .updateProfile(this.tempProfile)
+      .subscribe(res => {
+        this.profile = res;
+      },
+        error => alert(error.message)
+      );
+  }
 }

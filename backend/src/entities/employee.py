@@ -175,6 +175,8 @@ def update_employee(auth0_id):
     employee.sunday_start = request_employee.sunday_start
     employee.sunday_end = request_employee.sunday_end
     employee.number_of_hours = request_employee.number_of_hours
+    employee.last_updated_by = request_employee.last_updated_by
+    employee.updated_at = request_employee.updated_at
     session.commit()
 
     # return updated employee
