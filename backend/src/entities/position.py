@@ -60,7 +60,7 @@ def add_position():
     posted_position = PositionSchema(only=('department_id', 'name', 'description', 'expiration_date')) \
         .load(request.get_json())
 
-    department = Position(**posted_position, created_by="HTTP post request")
+    position = Position(**posted_position, created_by="HTTP post request")
 
     # persist store
     session = Session()

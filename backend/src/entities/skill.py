@@ -36,7 +36,7 @@ class SkillSchema(Schema):
 
 blueprint = Blueprint('skills', __name__)
 
-@blueprint.route('/get/<position_id>', methods=['GET'])
+@blueprint.route('/get/position/<position_id>', methods=['GET'])
 @requires_auth
 def get_skills_by_position(position_id):
     # fetching from the database
@@ -51,7 +51,7 @@ def get_skills_by_position(position_id):
     session.close()
     return jsonify(skills)
 
-@blueprint.route('/get/<employee_id>', methods=['GET'])
+@blueprint.route('/get/employee/<employee_id>', methods=['GET'])
 @requires_auth
 def get_skills_by_employee(employee_id):
     # fetching from the database
@@ -73,7 +73,7 @@ def add_position():
     posted_skill = SkillSchema(only=('position_id', 'employee_id', 'skill_level')) \
         .load(request.get_json())
 
-    department = Skill(**posted_skill, created_by="HTTP post request")
+    skill = Skill(**posted_skill, created_by="HTTP post request")
 
     # persist store
     session = Session()

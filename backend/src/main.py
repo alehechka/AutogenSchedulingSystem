@@ -8,6 +8,8 @@ from .entities.employee import Employee, EmployeeSchema, blueprint as employee_b
 from .entities.department import Department, DepartmentSchema, blueprint as department_blueprint
 from .entities.position import Position, PositionSchema, blueprint as position_blueprint
 from .entities.skill import Skill, SkillSchema, blueprint as skill_blueprint
+from .entities.shift import Shift, ShiftSchema, blueprint as shift_blueprint
+from .entities.schedule import Schedule, ScheduleSchema, blueprint as schedule_blueprint
 from .auth import AuthError, requires_auth, requires_role#, requires_user
 
 # creating the Flask application
@@ -31,11 +33,19 @@ app.register_blueprint(department_blueprint, url_prefix='/departments')
 
 ####### POSITIONS ##################################################################################################
 
-app.register_blueprint(position_blueprint, url_prefix='/position')
+app.register_blueprint(position_blueprint, url_prefix='/positions')
 
 ####### SKILLS ##################################################################################################
 
-app.register_blueprint(skill_blueprint, url_prefix='/skill')
+app.register_blueprint(skill_blueprint, url_prefix='/skills')
+
+####### SHIFTS ##################################################################################################
+
+app.register_blueprint(shift_blueprint, url_prefix='/shifts')
+
+####### SCHEDULE ##################################################################################################
+
+app.register_blueprint(schedule_blueprint, url_prefix='/schedule')
 
 ####### ERRORS ##################################################################################################
 
