@@ -12,7 +12,7 @@ from marshmallow import Schema, fields
 class Employee(Entity, Base):
     __tablename__ = 'employees'
 
-    store_id = Column(Integer, ForeignKey('stores.id'))
+    store_id = Column(Integer, ForeignKey('stores.id'), unique=True)
     monday_start = Column(Float, CheckConstraint('monday_start>=0 AND monday_start<=24 AND monday_start<=monday_end'), nullable=True, default=0)
     monday_end = Column(Float, CheckConstraint('monday_end>=0 AND monday_end<=24 AND monday_end>=monday_start'), nullable=True, default=0)
     tuesday_start = Column(Float, CheckConstraint('tuesday_start>=0 AND tuesday_start<=24 AND tuesday_start<=tuesday_end'), nullable=True, default=0)

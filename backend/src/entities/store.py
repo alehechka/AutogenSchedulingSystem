@@ -59,6 +59,21 @@ def get_stores():
     session.close()
     return jsonify(stores)
 
+@blueprint.route('/getStore/<store_id>', methods=['GET'])
+@requires_auth
+def get_store(store_id):
+    # fetching from the database
+    session = Session()
+    store_object = session.query(Store).filter_by(id=store_id).first()
+
+    # transforming into JSON-serializable objects
+    schema = StoreSchema(many=False)
+    store = schema.dump(store_object)
+
+    # serializing as JSON
+    session.close()
+    return jsonify(store)
+
 @blueprint.route('/add', methods=['POST'], endpoint='add_store')
 @requires_auth
 @requires_role('admin')

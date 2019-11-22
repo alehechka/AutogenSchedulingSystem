@@ -10,8 +10,9 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {
-  MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule,
+  MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule, 
 } from '@angular/material';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { StoresComponent } from './stores/stores.component';
 import { StoreFormComponent } from './stores/stores-form.component';
@@ -22,6 +23,7 @@ import { ProfileApiService } from './profile/profile-api.service';
 
 import { DepartmentComponent } from './stores/departments/departments.component';
 import { DepartmentApiService } from './stores/departments/departments-api.service'
+import { DepartmentFormComponent } from './stores/departments/departments-form.component';
 
 
 const appRoutes: Routes = [
@@ -29,7 +31,8 @@ const appRoutes: Routes = [
   { path: 'stores', component: StoresComponent },
   { path: 'callback', component: CallbackComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'department/:store_id', component: DepartmentComponent }
+  { path: 'department/:store_id', component: DepartmentComponent },
+  { path: 'new-department/:store_id', component: DepartmentFormComponent },
 ];
 
 @NgModule({
@@ -39,6 +42,7 @@ const appRoutes: Routes = [
     StoresComponent,
     ProfileComponent,
     DepartmentComponent,
+    DepartmentFormComponent,
     CallbackComponent,
   ],
   imports: [
@@ -53,6 +57,7 @@ const appRoutes: Routes = [
     MatCardModule,
     MatInputModule,
     FormsModule,
+    MatExpansionModule,
   ],
   providers: [StoresApiService, ProfileApiService, DepartmentApiService, ],
   bootstrap: [AppComponent]

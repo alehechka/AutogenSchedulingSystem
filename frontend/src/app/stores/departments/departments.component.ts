@@ -4,48 +4,59 @@ import { Subscription } from 'rxjs/Subscription';
 import { Department, Position } from './departments.model';
 import { DepartmentApiService } from './departments-api.service';
 import { UserProfile } from 'auth0-web/src/profile';
+import { Store } from '../stores.model';
+import { StoresApiService } from '../stores-api.service';
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: 'stores',
+  selector: 'departments',
   template: `
-    <h2>Stores</h2>
-    <p>Select a store to view schedule.</p>
-    <div class="stores">
-      <mat-card class="example-card" *ngFor="let store of storesList" class="mat-elevation-z5">
+    <h2 *ngIf="store !== undefined">Departments for Store: {{store.name}}</h2>
+    <p>Select a department to view schedule.</p>
+    <div class="departments" *ngIf="departmentsList !== undefined">
+      <mat-card class="example-card" *ngFor="let department of departmentsList" class="mat-elevation-z5">
         <mat-card-content>
-          <mat-card-title>{{store.name}}</mat-card-title>
-          <mat-card-subtitle>{{store.description}}</mat-card-subtitle>
-          <p>
-            {{store.streetAddress}}
-          </p>
+          <mat-card-title>{{department.name}}</mat-card-title>
+          <mat-card-subtitle>{{department.description}}</mat-card-subtitle>
           <button mat-raised-button color="accent">Schedule</button>
           <button mat-button color="warn" *ngIf="isAdmin()"
-                  (click)="delete(store.id)">
+                  (click)="delete(department._id)">
             Delete
           </button>
         </mat-card-content>
       </mat-card>
     </div>
     <button mat-fab color="primary" *ngIf="isAdmin()"
-            class="new-store" routerLink="/new-store">
+            class="new-store" routerLink="/new-department/{{store_id}}">
       <i class="material-icons">note_add</i>
     </button>
   `,
   styleUrls: ['departments.component.css'],
 })
 export class DepartmentComponent implements OnInit, OnDestroy {
+  departmentsListSubs: Subscription;
   storesListSubs: Subscription;
-  storesList: Department[];
+  departmentsList: Department[];
   authenticated = false;
   user: UserProfile;
+  store: Store;
+  store_id: string;
 
-  constructor(private storesApi: DepartmentApiService) { }
+  constructor(private router: ActivatedRoute, private departmentApi: DepartmentApiService, private storesApi: StoresApiService) { }
 
   ngOnInit() {
+    this.store_id = this.router.snapshot.paramMap.get("store_id");
     this.storesListSubs = this.storesApi
-      .getStores()
+      .getStore(this.store_id)
       .subscribe(res => {
-        this.storesList = res;
+        this.store = res;
+      },
+        console.error
+      );
+    this.departmentsListSubs = this.departmentApi
+      .getDepartments(this.store_id)
+      .subscribe(res => {
+        this.departmentsList = res;
       },
         console.error
       );
@@ -54,18 +65,19 @@ export class DepartmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.departmentsListSubs.unsubscribe();
     this.storesListSubs.unsubscribe();
   }
 
-  delete(storeId: number) {
-    this.storesApi
-      .deleteStore(storeId)
+  delete(departmentId: number) {
+    this.departmentApi
+      .deleteDepartment(departmentId)
       .subscribe(() => {
-        this.storesListSubs = this.storesApi
-          .getStores()
+        this.departmentsListSubs = this.departmentApi
+          .getDepartments(this.store._id)
           .subscribe(res => {
-              this.storesList = res;
-            },
+            this.departmentsList = res;
+          },
             console.error
           )
       }, console.error);

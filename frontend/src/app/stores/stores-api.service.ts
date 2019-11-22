@@ -28,6 +28,17 @@ export class StoresApiService {
       .catch(StoresApiService._handleError);
   }
 
+  getStore(store_id): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    return this.http
+      .get(`${API_URL}/stores/getStore/${store_id}`, httpOptions)
+      .catch(StoresApiService._handleError);
+  }
+
   saveStore(store: Store): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({

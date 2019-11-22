@@ -1,60 +1,29 @@
 import * as Auth0 from 'auth0-web';
 import {Component, OnInit} from '@angular/core';
 import {DepartmentApiService} from "./departments-api.service";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'store-form',
   template: `
     <mat-card>
-      <h2>New Store</h2>
+      <h2>New Department</h2>
         <mat-form-field class="full-width">
           <input matInput
                  placeholder="Name"
-                 (keyup)="updateName($event)">
+                 [(ngModel)]="department.name">
         </mat-form-field>
 
         <mat-form-field class="full-width">
           <input matInput
                  placeholder="Description"
-                 (keyup)="updateDescription($event)">
+                 [(ngModel)]="department.description">
         </mat-form-field>
-
-        <mat-form-field class="full-width">
-          <input matInput
-                    placeholder="Street Address"
-                    (keyup)="updateStreetAddress($event)">
-        </mat-form-field>
-
-        <mat-form-field class="full-width">
-          <input matInput
-                    placeholder="City"
-                    (keyup)="updateCity($event)">
-        </mat-form-field>
-
-        <mat-form-field class="full-width">
-          <input matInput
-                    placeholder="State"
-                    (keyup)="updateState($event)">
-        </mat-form-field>
-
-        <mat-form-field class="full-width">
-          <input type="number" matInput
-                    placeholder="Zip Code"
-                    (keyup)="updateZipCode($event)">
-        </mat-form-field>
-
-        <mat-form-field class="full-width">
-          <input type="number" matInput
-                    placeholder="Phone Number"
-                    (keyup)="updatePhoneNumber($event)">
-        </mat-form-field>
-
         <button mat-raised-button
                 color="primary"
                 disabled={{!isAdmin()}}
-                (click)="saveStore()">
-          Create Store
+                (click)="saveDepartment()">
+          Create Department
         </button>
     </mat-card>
   `,
@@ -70,26 +39,29 @@ import {Router} from "@angular/router";
     }
   `]
 })
-export class StoreFormComponent implements OnInit {
+export class DepartmentFormComponent implements OnInit {
   authenticated = false;
-  store = {
+  department = {
     store_id: 0,
     name: '',
     description: '',
   };
+  store_id: string;
 
-  constructor(private storesApi: DepartmentApiService, private router: Router) { }
+  constructor(private departmentsApi: DepartmentApiService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     const self = this;
+    this.store_id = this.route.snapshot.paramMap.get("store_id");
+    this.department.store_id = parseInt(this.store_id);
     Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
   }
   
-  saveStore() {
-    this.storesApi
-      .saveStore(this.store)
+  saveDepartment() {
+    this.departmentsApi
+      .saveDepartment(this.department)
       .subscribe(
-        () => this.router.navigate(['/stores']),
+        () => this.router.navigate([`/department/${this.store_id}`]),
         error => alert(error.message)
       );
   }

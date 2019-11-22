@@ -17,34 +17,34 @@ export class DepartmentApiService {
   }
 
   // GET list of public, future events
-  getStores(): Observable<any> {
+  getDepartments(storeId): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .get(`${API_URL}/stores/get`, httpOptions)
+      .get(`${API_URL}/departments/get/${storeId}`, httpOptions)
       .catch(DepartmentApiService._handleError);
   }
 
-  saveStore(store: Department): Observable<any> {
+  saveDepartment(department: Department): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .post(`${API_URL}/stores/add`, store, httpOptions);
+      .post(`${API_URL}/departments/add`, department, httpOptions);
   }
 
-  deleteStore(storeId: number) {
+  deleteDepartment(departmentId: number) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .delete(`${API_URL}/stores/delete/${storeId}`, httpOptions);
+      .delete(`${API_URL}/department/delete/${departmentId}`, httpOptions);
   }
 }

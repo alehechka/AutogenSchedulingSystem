@@ -13,7 +13,7 @@ marshmallow = "*"
 flask-cors = "*"
 python-jose-cryptodome = "*"
 alembic = "*"
-pycryptodome = "*"
+pycryptodome = ">=3.9.0"
 auth0-python = "*"
 
 [requires]
