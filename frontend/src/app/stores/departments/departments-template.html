@@ -1,0 +1,52 @@
+<h2 *ngIf="store !== undefined">Departments for Store: {{store.name}}</h2>
+<p>Select a department to view schedule.</p>
+{{departmentsList[0] |json}}
+<div class="departments" *ngIf="departmentsList !== undefined">
+  <mat-card
+    class="example-card"
+    *ngFor="let department of departmentsList; let i = index" [attr.data-index]="i"
+    class="mat-elevation-z5"
+  >
+    <mat-card-content>
+      <mat-card-title>{{department.name}}</mat-card-title>
+      <mat-card-subtitle>{{department.description}}</mat-card-subtitle>
+      <mat-accordion>
+        <mat-expansion-panel (opened)="department.positions === undefined ? populatePositions(i, department.id) : null">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Positions
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-list *ngIf="department.positions !== undefined">
+            <mat-list-item *ngFor="let position of department.positions">
+              <h4 mat-line>{{position.name}}</h4>
+              <p mat-line>{{position.description}}</p>
+            </mat-list-item>
+          </mat-list>
+          <mat-action-row>
+            <button mat-button color="primary" (click)="addPosition()">New</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <br />
+      <button mat-raised-button color="accent">Schedule</button>
+      <button
+        mat-button
+        color="warn"
+        *ngIf="isAdmin()"
+        (click)="delete(department._id)"
+      >
+        Delete
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>
+<button
+  mat-fab
+  color="primary"
+  *ngIf="isAdmin()"
+  class="new-department"
+  [routerLink]="['/new-department/', store_id]"
+>
+  <i class="material-icons">note_add</i>
+</button>

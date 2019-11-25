@@ -13,6 +13,7 @@ import {
   MatToolbarModule, MatButtonModule, MatCardModule, MatInputModule, 
 } from '@angular/material';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatListModule} from '@angular/material/list';
 
 import { StoresComponent } from './stores/stores.component';
 import { StoreFormComponent } from './stores/stores-form.component';
@@ -24,6 +25,8 @@ import { ProfileApiService } from './profile/profile-api.service';
 import { DepartmentComponent } from './stores/departments/departments.component';
 import { DepartmentApiService } from './stores/departments/departments-api.service'
 import { DepartmentFormComponent } from './stores/departments/departments-form.component';
+
+import { PositionApiService } from './stores/departments/positions/positions-api.service';
 
 
 const appRoutes: Routes = [
@@ -58,8 +61,9 @@ const appRoutes: Routes = [
     MatInputModule,
     FormsModule,
     MatExpansionModule,
+    MatListModule,
   ],
-  providers: [StoresApiService, ProfileApiService, DepartmentApiService, ],
+  providers: [StoresApiService, ProfileApiService, DepartmentApiService, PositionApiService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
