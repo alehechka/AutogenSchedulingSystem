@@ -45,6 +45,6 @@ export class DepartmentApiService {
       })
     };
     return this.http
-      .delete(`${API_URL}/department/delete/${departmentId}`, httpOptions);
+      .delete(`${API_URL}/departments/delete/${departmentId}`, httpOptions);
   }
 }

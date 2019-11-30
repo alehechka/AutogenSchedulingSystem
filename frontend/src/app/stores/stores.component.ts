@@ -71,7 +71,7 @@ export class StoresComponent implements OnInit, OnDestroy {
   }
 
   goToStore(storeId: number) {
-    this.router.navigate([`/department/${storeId}`])
+    this.router.navigate([`/departments/${storeId}`])
   }
 
   isAdmin() {

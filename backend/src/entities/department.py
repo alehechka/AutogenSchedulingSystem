@@ -71,3 +71,14 @@ def add_department():
     new_department = DepartmentSchema().dump(department)
     session.close()
     return jsonify(new_department), 201
+
+@blueprint.route('/delete/<department_id>', methods=['DELETE'], endpoint='delete_department')
+@requires_auth
+@requires_role('admin')
+def delete_store(department_id):
+    session = Session()
+    department = session.query(Department).filter_by(id=department_id).first()
+    session.delete(department)
+    session.commit()
+    session.close()
+    return '', 201

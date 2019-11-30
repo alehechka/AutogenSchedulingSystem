@@ -24,7 +24,8 @@ import {Router, ActivatedRoute} from "@angular/router";
                 disabled={{!isAdmin()}}
                 (click)="saveDepartment()">
           Create Department
-        </button>
+        </button> 
+        <button mat-button color="warn" (click)="cancelNewDepartment()">Cancel</button>
     </mat-card>
   `,
   styles: [`
@@ -61,9 +62,13 @@ export class DepartmentFormComponent implements OnInit {
     this.departmentsApi
       .saveDepartment(this.department)
       .subscribe(
-        () => this.router.navigate([`/department/${this.store_id}`]),
+        () => this.router.navigate([`/departments/${this.store_id}`]),
         error => alert(error.message)
       );
+  }
+
+  cancelNewDepartment() {
+    this.router.navigate([`/departments/${this.store_id}`]);
   }
 
   isAdmin() {
