@@ -6,7 +6,6 @@ from .entity import Entity, Base, Session
 from flask import Blueprint, jsonify, request
 from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
-from .department import Department
 
 class Position(Entity, Base):
     __tablename__ = 'positions'
@@ -71,3 +70,24 @@ def add_position():
     new_position = PositionSchema().dump(position)
     session.close()
     return jsonify(new_position), 201
+
+@blueprint.route('/delete/<position_id>', methods=['DELETE'], endpoint='delete_position')
+@requires_auth
+@requires_role('admin')
+def delete_position(position_id):
+    session = Session()
+    position = session.query(Position).filter_by(id=position_id).first()
+    session.delete(position)
+    session.commit()
+    session.close()
+    return '', 201
+
+# @blueprint.route('/delete_all/<department_id>', methods=['DELETE'], endpoint='delete_positions')
+# @requires_auth
+# @requires_role('admin')
+def delete_positions(department_id):
+    session = Session()
+    session.query(Position).filter_by(department_id=department_id).delete()
+    session.commit()
+    session.close()
+    return '', 201

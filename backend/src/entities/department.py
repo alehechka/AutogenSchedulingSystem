@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify, request
 from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
 from .store import Store
+from .position import Position, delete_positions
 
 class Department(Entity, Base):
     __tablename__ = 'departments'
@@ -75,7 +76,8 @@ def add_department():
 @blueprint.route('/delete/<department_id>', methods=['DELETE'], endpoint='delete_department')
 @requires_auth
 @requires_role('admin')
-def delete_store(department_id):
+def delete_department(department_id):
+    delete_positions(department_id)
     session = Session()
     department = session.query(Department).filter_by(id=department_id).first()
     session.delete(department)

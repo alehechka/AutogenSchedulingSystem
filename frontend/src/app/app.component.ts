@@ -9,7 +9,7 @@ import { ProfileApiService } from './profile/profile-api.service';
     <mat-toolbar color="primary" class="mat-elevation-z10">
       <button mat-button (click)="goHome()">Home</button>
       <button mat-button (click)="goStores()">Stores</button>
-      <button mat-button>About</button>
+      <button mat-button (click)="goAbout()">About</button>
 
       <!-- This fills the remaining space of the current row -->
       <span class="fill-remaining-space"></span>
@@ -39,7 +39,11 @@ export class AppComponent implements OnInit {
   }
 
   goHome() {
-    this.router.navigate(['/'])
+    this.router.navigate(['/home'])
+  }
+
+  goAbout() {
+    this.router.navigate(['/about'])
   }
 
   goProfile() {

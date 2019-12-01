@@ -16,6 +16,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
+import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './about/about.component';
+
 import { StoresComponent } from './stores/stores.component';
 import { StoreFormComponent } from './stores/stores-form.component';
 import { StoresApiService } from './stores/stores-api.service';
@@ -31,6 +34,9 @@ import { PositionApiService } from './stores/departments/positions/positions-api
 
 
 const appRoutes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'new-store', component: StoreFormComponent },
   { path: 'stores', component: StoresComponent },
   { path: 'callback', component: CallbackComponent },
@@ -42,6 +48,8 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent,
+    AboutComponent,
     StoreFormComponent,
     StoresComponent,
     ProfileComponent,
