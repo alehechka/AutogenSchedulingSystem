@@ -5,31 +5,12 @@ import { Store } from './stores.model';
 import {Router} from "@angular/router";
 import { StoresApiService } from './stores-api.service';
 import { UserProfile } from 'auth0-web/src/profile';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteItemDialog } from '../components/delete-item.component';
 
 @Component({
   selector: 'stores',
-  template: `
-    <h2>Stores</h2>
-    <p>Select a store to view schedule.</p>
-    <div class="stores">
-      <mat-card class="example-card" *ngFor="let store of storesList" class="mat-elevation-z5"
-        style="cursor: pointer" (click)="goToStore(store.id)">
-        <mat-card-content>
-          <mat-card-title>{{store.name}}</mat-card-title>
-          <mat-card-subtitle>{{store.description}}</mat-card-subtitle>
-          <button mat-raised-button color="accent">Schedule</button>
-          <button mat-button color="warn" *ngIf="isAdmin()"
-                  (click)="delete(store.id)">
-            Delete
-          </button>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <button mat-fab color="primary" *ngIf="isAdmin()"
-            class="new-store" routerLink="/new-store">
-      <i class="material-icons">note_add</i>
-    </button>
-  `,
+  templateUrl: "./stores-template.html",
   styleUrls: ['stores.component.css'],
 })
 export class StoresComponent implements OnInit, OnDestroy {
@@ -38,7 +19,7 @@ export class StoresComponent implements OnInit, OnDestroy {
   authenticated = false;
   user: UserProfile;
 
-  constructor(private router: Router, private storesApi: StoresApiService) { }
+  constructor(private router: Router, private storesApi: StoresApiService, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.storesListSubs = this.storesApi
@@ -68,6 +49,20 @@ export class StoresComponent implements OnInit, OnDestroy {
             console.error
           )
       }, console.error);
+  }
+
+  openDeleteStoreDialog(index: number) {
+    const dialogRef = this.dialog.open(DeleteItemDialog, {
+      width: '500px',
+      data: {item: this.storesList[index].name, itemType: 'store'}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if(result === true) {
+        this.delete(this.storesList[index].id)
+      }
+    });
   }
 
   goToStore(storeId: number) {

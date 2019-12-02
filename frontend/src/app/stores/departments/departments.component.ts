@@ -1,5 +1,5 @@
 import * as Auth0 from 'auth0-web';
-import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Department } from './departments.model';
 import { DepartmentApiService } from './departments-api.service';
@@ -9,7 +9,8 @@ import { Store } from '../stores.model';
 import { StoresApiService } from '../stores-api.service';
 import { ActivatedRoute } from "@angular/router";
 import { Position } from "./positions/positions.model";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DeleteItemDialog } from '../../components/delete-item.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'departments',
@@ -24,11 +25,14 @@ export class DepartmentComponent implements OnInit, OnDestroy {
   user: UserProfile;
   store: Store;
   store_id: string;
-  createNewPosition: boolean;
-  newPositionName: string;
-  newPositionDescription: string;
 
-  constructor(private router: ActivatedRoute, public dialog: MatDialog, private departmentApi: DepartmentApiService, private storesApi: StoresApiService, private positionsApi: PositionApiService) { }
+  constructor(
+    private router: ActivatedRoute, 
+    private dialog: MatDialog, 
+    private departmentApi: DepartmentApiService, 
+    private storesApi: StoresApiService, 
+    private positionsApi: PositionApiService
+  ) { }
 
   ngOnInit() {
     this.store_id = this.router.snapshot.paramMap.get("store_id");
@@ -39,13 +43,7 @@ export class DepartmentComponent implements OnInit, OnDestroy {
       },
         console.error
       );
-    this.departmentsListSubs = this.departmentApi
-      .getDepartments(this.store_id)
-      .subscribe(res => {
-        this.departmentsList = res;
-      },
-        console.error
-      );
+    this.getDepartments();
     const self = this;
     Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
   }
@@ -53,6 +51,16 @@ export class DepartmentComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.departmentsListSubs.unsubscribe();
     this.storesListSubs.unsubscribe();
+  }
+
+  getDepartments() {
+    this.departmentsListSubs = this.departmentApi
+      .getDepartments(this.store_id)
+      .subscribe(res => {
+        this.departmentsList = res;
+      },
+        console.error
+      );
   }
 
   delete(departmentId: number) {
@@ -108,45 +116,45 @@ export class DepartmentComponent implements OnInit, OnDestroy {
   }
 
   openDeleteDepartmentDialog(index: number) {
-    const dialogRef = this.dialog.open(DeleteDepartmentDialog, {
+    const dialogRef = this.dialog.open(DeleteItemDialog, {
       width: '500px',
-      data: {department: this.departmentsList[index]}
+      data: { item: this.departmentsList[index].name, itemType: 'department' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      if(result === true) {
+      if (result === true) {
         this.delete(this.departmentsList[index].id)
       }
     });
   }
-}
 
-export interface DialogData {
-  department: Department
-}
+  editDepartment(index: number) {
+    this.departmentsList[index].editing = !this.departmentsList[index].editing;
+    this.departmentsList[index].newName = this.departmentsList[index].name;
+    this.departmentsList[index].newDescription = this.departmentsList[index].description;
+  }
 
-@Component({
-  selector: 'delete-department-dialog',
-  template: `<p mat-dialog-title>Are you sure you would like to delete the <i>{{data.department.name}}</i> department?</p>
-  <mat-action-row>
-  <button mat-button mat-raised-button color="primary" (click)="onNoClick()">
-          Cancel
-        </button>
-      <button mat-button color="warn" [mat-dialog-close]=true>
-        Delete
-      </button>
-      </mat-action-row>`,
-})
-export class DeleteDepartmentDialog {
+  updateDepartment(index: number) {
+    let dep = this.departmentsList[index];
+    let update = new Department(dep.store_id, dep.newName, dep.newDescription);
+    this.departmentApi
+      .updateDepartment(update, dep.id)
+      .subscribe(
+        () => this.getDepartments(),
+        error => alert(error.message)
+      );
+  }
 
-  constructor(
-    public dialogRef: MatDialogRef<DeleteDepartmentDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+  editPositions(index: number) {
+    this.departmentsList[index].editPosition = !this.departmentsList[index].editPosition;
+  }
 
-  
+  checkPositionChanges() {
+    return true;
+  }
 
-  onNoClick(): void {
-    this.dialogRef.close();
+  updatePositions() {
+
   }
 }

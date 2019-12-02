@@ -82,12 +82,9 @@ def delete_position(position_id):
     session.close()
     return '', 201
 
-# @blueprint.route('/delete_all/<department_id>', methods=['DELETE'], endpoint='delete_positions')
-# @requires_auth
-# @requires_role('admin')
 def delete_positions(department_id):
     session = Session()
     session.query(Position).filter_by(department_id=department_id).delete()
     session.commit()
     session.close()
-    return '', 201
+    return

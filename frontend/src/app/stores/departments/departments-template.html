@@ -1,14 +1,35 @@
 <h2 *ngIf="store !== undefined">Departments for Store: {{store.name}}</h2>
 <p>Select a department to view schedule.</p>
+<!-- {{departmentsList[0]|json}} -->
 <br />
 <div class="departments" *ngIf="departmentsList !== undefined">
-  <mat-card class="example-card" *ngFor="let department of departmentsList; let i = index" [attr.data-index]="i"
-    class="mat-elevation-z5">
+  <mat-card
+    class="example-card"
+    *ngFor="let department of departmentsList; let i = index"
+    [attr.data-index]="i"
+    class="mat-elevation-z5"
+  >
     <mat-card-content>
-      <mat-card-title>{{department.name}}</mat-card-title>
-      <mat-card-subtitle>{{department.description}}</mat-card-subtitle>
+      <mat-card-title *ngIf="!department.editing"
+        >{{department.name}}</mat-card-title
+      >
+      <mat-card-subtitle *ngIf="!department.editing"
+        >{{department.description}}</mat-card-subtitle
+      >
+      <mat-form-field *ngIf="department.editing">
+        <input matInput placeholder="Name" [(ngModel)]="department.newName" />
+      </mat-form-field>
+      <mat-form-field *ngIf="department.editing">
+        <input
+          matInput
+          placeholder="Description"
+          [(ngModel)]="department.newDescription"
+        />
+      </mat-form-field>
       <mat-accordion>
-        <mat-expansion-panel (opened)="department.positions === undefined ? populatePositions(i, department.id) : null">
+        <mat-expansion-panel
+          (opened)="department.positions === undefined ? populatePositions(i, department.id) : null"
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>
               Positions
@@ -16,41 +37,139 @@
           </mat-expansion-panel-header>
           <mat-list *ngIf="department.positions !== undefined">
             <mat-list-item *ngFor="let position of department.positions">
-              <h4 mat-line>{{position.name}}</h4>
-              <p mat-line>{{position.description}}</p>
+              <h4 *ngIf="!department.editPosition" mat-line>{{position.name}}</h4>
+              <p *ngIf="!department.editPosition" mat-line>{{position.description}}</p>
+              <mat-form-field *ngIf="department.editPosition">
+                <input
+                  matInput
+                  placeholder="Name"
+                  [(ngModel)]="position.name"
+                />
+              </mat-form-field>
+              <mat-form-field *ngIf="department.editPosition">
+                <input
+                  matInput
+                  placeholder="Description"
+                  [(ngModel)]="position.description"
+                />
+              </mat-form-field>
             </mat-list-item>
             <mat-list-item *ngIf="department.createNewPosition">
               <mat-form-field>
-                <input matInput placeholder="Name" [(ngModel)]="department.newPositionName">
+                <input
+                  matInput
+                  placeholder="Name"
+                  [(ngModel)]="department.newPositionName"
+                />
               </mat-form-field>
               <mat-form-field>
-                <input matInput placeholder="Description" [(ngModel)]="department.newPositionDescription">
+                <input
+                  matInput
+                  placeholder="Description"
+                  [(ngModel)]="department.newPositionDescription"
+                />
               </mat-form-field>
             </mat-list-item>
           </mat-list>
           <mat-action-row>
-            <button mat-button color="primary" *ngIf="!department.createNewPosition"
-              (click)="addPosition(i)">New</button>
-            <button mat-raised-button color="primary" *ngIf="department.createNewPosition" [disabled]="department.newPositionName === undefined || department.newPositionName === '' || 
+            <button
+              mat-button
+              color="primary"
+              *ngIf="!department.createNewPosition && !department.editPosition"
+              (click)="addPosition(i)"
+            >
+              New
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              *ngIf="department.createNewPosition"
+              [disabled]="department.newPositionName === undefined || department.newPositionName === '' || 
                           department.newPositionDescription === undefined || department.newPositionDescription === ''"
-              (click)="savePosition(department.newPositionName, department.newPositionDescription, department.id, i)">Save</button>
-            <button mat-button color="warn" *ngIf="department.createNewPosition"
-              (click)="addPosition(i); clearPosition(i);">Cancel</button>
+              (click)="savePosition(department.newPositionName, department.newPositionDescription, department.id, i)"
+            >
+              Save
+            </button>
+            <button
+              mat-button
+              color="warn"
+              *ngIf="department.createNewPosition"
+              (click)="addPosition(i); clearPosition(i);"
+            >
+              Cancel
+            </button>
+            <button
+              mat-button
+              color="primary"
+              *ngIf="!department.createNewPosition && !department.editPosition"
+              (click)="editPositions(i)"
+            >
+              Edit
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              *ngIf="department.editPosition"
+              [disabled]="checkPositionChanges(i)"
+              (click)="updatePositions(i)"
+            >
+              Save
+            </button>
+            <button
+              mat-button
+              color="warn"
+              *ngIf="department.editPosition"
+              (click)="editPositions(i);"
+            >
+              Cancel
+            </button>
           </mat-action-row>
         </mat-expansion-panel>
       </mat-accordion>
       <br />
-        <button layout-align="start" mat-raised-button color="primary">Schedule</button>
-        <button layout-align="end" mat-button color="primary" (click)="editSomeShit(i)">
-          Edit
-        </button>
-        <button layout-align="end" mat-button color="warn" *ngIf="isAdmin()"
-          (click)="openDeleteDepartmentDialog(i)">
-          Delete
-        </button>
+      <button mat-raised-button color="primary">Schedule</button>
+      <button
+        *ngIf="!department.editing"
+        mat-button
+        color="primary"
+        (click)="editDepartment(i)"
+      >
+        Edit
+      </button>
+      <button
+        [disabled]="department.name === department.newName && department.description === department.newDescription"
+        *ngIf="department.editing"
+        mat-button
+        color="primary"
+        (click)="updateDepartment(i)"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="department.editing"
+        mat-button
+        color="warn"
+        (click)="editDepartment(i)"
+      >
+        Cancel
+      </button>
+      <button
+        mat-button
+        color="warn"
+        *ngIf="isAdmin() && !department.editing"
+        (click)="openDeleteDepartmentDialog(i)"
+      >
+        Delete
+      </button>
     </mat-card-content>
   </mat-card>
 </div>
-<button mat-fab color="primary" *ngIf="isAdmin()" class="new-department" [routerLink]="['/new-department/', store_id]">
-  <i class="material-icons">note_add</i>
+<button
+  mat-fab
+  color="primary"
+  *ngIf="isAdmin()"
+  class="new-department"
+  [routerLink]="['/new-department/', store_id]"
+>
+  <i class="material-icons">library_add</i>
 </button>

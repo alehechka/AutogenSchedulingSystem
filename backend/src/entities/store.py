@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, request
 from .entity import Entity, Base, Session
 from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
+from .department import delete_departments
 
 class Store(Entity, Base):
     __tablename__ = 'stores'
@@ -100,6 +101,7 @@ def add_store():
 def delete_store(store_id):
     session = Session()
     store = session.query(Store).filter_by(id=store_id).first()
+    delete_departments(store.id)
     session.delete(store)
     session.commit()
     session.close()

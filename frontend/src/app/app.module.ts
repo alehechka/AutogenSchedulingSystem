@@ -26,7 +26,8 @@ import { StoresApiService } from './stores/stores-api.service';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileApiService } from './profile/profile-api.service';
 
-import { DepartmentComponent, DeleteDepartmentDialog } from './stores/departments/departments.component';
+import { DepartmentComponent } from './stores/departments/departments.component';
+import { DeleteItemDialog } from './components/delete-item.component';
 import { DepartmentApiService } from './stores/departments/departments-api.service'
 import { DepartmentFormComponent } from './stores/departments/departments-form.component';
 
@@ -54,12 +55,12 @@ const appRoutes: Routes = [
     StoresComponent,
     ProfileComponent,
     DepartmentComponent,
-    DeleteDepartmentDialog,
+    DeleteItemDialog,
     DepartmentFormComponent,
     CallbackComponent,
   ],
   entryComponents: [
-    DeleteDepartmentDialog,
+    DeleteItemDialog,
   ],
   imports: [
     BrowserModule,

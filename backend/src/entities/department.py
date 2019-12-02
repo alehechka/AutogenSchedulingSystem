@@ -6,7 +6,7 @@ from .entity import Entity, Base, Session
 from flask import Blueprint, jsonify, request
 from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
-from .store import Store
+# from .store import Store
 from .position import Position, delete_positions
 
 class Department(Entity, Base):
@@ -73,6 +73,30 @@ def add_department():
     session.close()
     return jsonify(new_department), 201
 
+@blueprint.route('/update/<department_id>', methods=['POST'], endpoint='update_department')
+@requires_auth
+def update_department(department_id):
+    # mount store object
+    posted_department = DepartmentSchema(only=('store_id', 'name', 'description')) \
+        .load(request.get_json())
+
+    update = Department(**posted_department, created_by="HTTP post request")
+
+    # persist store
+    session = Session()
+
+    department = session.query(Department).filter_by(id=department_id).first()
+    department.name = update.name
+    department.description = update.description
+    department.last_updated_by = "HTTP post request"
+    department.updated_at = update.updated_at
+    session.commit()
+
+    # return created store
+    new_department = DepartmentSchema().dump(department)
+    session.close()
+    return jsonify(new_department), 201
+
 @blueprint.route('/delete/<department_id>', methods=['DELETE'], endpoint='delete_department')
 @requires_auth
 @requires_role('admin')
@@ -84,3 +108,13 @@ def delete_department(department_id):
     session.commit()
     session.close()
     return '', 201
+
+def delete_departments(store_id):
+    session = Session()
+    departments = session.query(Department).filter_by(store_id=store_id)
+    for department in departments:
+        delete_positions(department.id)
+        session.delete(department)
+    session.commit()
+    session.close()
+    return

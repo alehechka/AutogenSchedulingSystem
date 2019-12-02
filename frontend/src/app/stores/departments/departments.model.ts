@@ -3,14 +3,21 @@ export class Department {
     public store_id: number,
     public name: string,
     public description: string,
-    public expiration_date?: Date,
     public id?: number,
+    public expiration_date?: Date,
     public updatedAt?: Date,
     public createdAt?: Date,
     public lastUpdatedBy?: string,
+
+    public positions?: Position[],
+
+
     public createNewPosition?: boolean,
+    public editPosition?: boolean,
     public newPositionName?: string,
     public newPositionDescription?: string,
-    public positions?: Position[]
+    public editing?: boolean,
+    public newName?: string,
+    public newDescription?: string,
   ) { }
 }

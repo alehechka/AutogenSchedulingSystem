@@ -38,6 +38,16 @@ export class DepartmentApiService {
       .post(`${API_URL}/departments/add`, department, httpOptions);
   }
 
+  updateDepartment(department: Department, department_id: number): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    return this.http
+      .post(`${API_URL}/departments/update/${department_id}`, department, httpOptions);
+  }
+
   deleteDepartment(departmentId: number) {
     const httpOptions = {
       headers: new HttpHeaders({
