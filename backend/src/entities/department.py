@@ -6,7 +6,6 @@ from .entity import Entity, Base, Session
 from flask import Blueprint, jsonify, request
 from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
-# from .store import Store
 from .position import Position, delete_positions
 
 class Department(Entity, Base):

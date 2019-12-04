@@ -38,6 +38,16 @@ export class PositionApiService {
       .post(`${API_URL}/positions/add`, position, httpOptions);
   }
 
+  updatePosition(position: Position, position_id: number): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    return this.http
+      .post(`${API_URL}/positions/update/${position_id}`, position, httpOptions);
+  }
+
   deletePosition(positionId: number) {
     const httpOptions = {
       headers: new HttpHeaders({

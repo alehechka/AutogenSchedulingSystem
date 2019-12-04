@@ -71,6 +71,30 @@ def add_position():
     session.close()
     return jsonify(new_position), 201
 
+@blueprint.route('/update/<position_id>', methods=['POST'], endpoint='update_position')
+@requires_auth
+def add_position(position_id):
+    # mount store object
+    posted_position = PositionSchema(only=('department_id', 'name', 'description')) \
+        .load(request.get_json())
+
+    update = Position(**posted_position, created_by="HTTP post request")
+
+    # persist store
+    session = Session()
+
+    position = session.query(Position).filter_by(id=position_id).first()
+    position.name = update.name
+    position.description = update.description
+    position.last_updated_by = "HTTP post request"
+    position.updated_at = update.updated_at
+    session.commit()
+
+    # return created store
+    new_position = PositionSchema().dump(position)
+    session.close()
+    return jsonify(new_position), 201
+
 @blueprint.route('/delete/<position_id>', methods=['DELETE'], endpoint='delete_position')
 @requires_auth
 @requires_role('admin')

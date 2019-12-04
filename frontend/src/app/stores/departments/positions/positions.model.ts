@@ -3,10 +3,13 @@ export class Position {
       public department_id: number,
       public name: string,
       public description: string,
+      public id?: number,
       public expiration_date?: Date,
-      public _id?: number,
       public updatedAt?: Date,
       public createdAt?: Date,
       public lastUpdatedBy?: string,
+
+      public newName?: string,
+      public newDescription?: string,
     ) { }
   }

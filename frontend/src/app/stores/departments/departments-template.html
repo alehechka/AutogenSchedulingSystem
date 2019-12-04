@@ -1,6 +1,6 @@
 <h2 *ngIf="store !== undefined">Departments for Store: {{store.name}}</h2>
 <p>Select a department to view schedule.</p>
-<!-- {{departmentsList[0]|json}} -->
+<!-- {{departmentsList[0].positions|json}} -->
 <br />
 <div class="departments" *ngIf="departmentsList !== undefined">
   <mat-card
@@ -36,23 +36,37 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-list *ngIf="department.positions !== undefined">
-            <mat-list-item *ngFor="let position of department.positions">
-              <h4 *ngIf="!department.editPosition" mat-line>{{position.name}}</h4>
-              <p *ngIf="!department.editPosition" mat-line>{{position.description}}</p>
+            <mat-list-item
+              *ngFor="let position of department.positions let j = index"
+              [attr.data-index]="j"
+            >
+              <h4 *ngIf="!department.editPosition" mat-line>
+                {{position.name}}
+              </h4>
+              <p *ngIf="!department.editPosition" mat-line>
+                {{position.description}}
+              </p>
               <mat-form-field *ngIf="department.editPosition">
                 <input
                   matInput
                   placeholder="Name"
-                  [(ngModel)]="position.name"
+                  [(ngModel)]="position.newName"
                 />
               </mat-form-field>
               <mat-form-field *ngIf="department.editPosition">
                 <input
                   matInput
                   placeholder="Description"
-                  [(ngModel)]="position.description"
+                  [(ngModel)]="position.newDescription"
                 />
               </mat-form-field>
+              <button
+                mat-button
+                *ngIf="department.editPosition && isAdmin()"
+                (click)="openDeletePositionDialog(i, j)"
+              >
+                <i class="material-icons">delete_forever</i>
+              </button>
             </mat-list-item>
             <mat-list-item *ngIf="department.createNewPosition">
               <mat-form-field>
@@ -110,7 +124,7 @@
               mat-raised-button
               color="primary"
               *ngIf="department.editPosition"
-              [disabled]="checkPositionChanges(i)"
+              [disabled]="!checkPositionChanges(i)"
               (click)="updatePositions(i)"
             >
               Save

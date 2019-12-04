@@ -1,3 +1,5 @@
+import { Position } from "./positions/positions.model";
+
 export class Department {
   constructor(
     public store_id: number,

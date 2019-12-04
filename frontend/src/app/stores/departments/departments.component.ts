@@ -148,13 +148,65 @@ export class DepartmentComponent implements OnInit, OnDestroy {
 
   editPositions(index: number) {
     this.departmentsList[index].editPosition = !this.departmentsList[index].editPosition;
+    for(let pos of this.departmentsList[index].positions) {
+      pos.newName = pos.name;
+      pos.newDescription = pos.description;
+    }
   }
 
-  checkPositionChanges() {
-    return true;
+  checkPositionChanges(index: number) {
+    let dep = this.departmentsList[index]
+    for(let pos of dep.positions) {
+      if(this.isPositionChanged(pos) === true) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  updatePositions() {
+  isPositionChanged(pos: Position) {
+    return (pos.name !== pos.newName || pos.description !== pos.newDescription) 
+    && (pos.newName !== null && pos.newName !== '') 
+    && (pos.newDescription !== null && pos.newDescription !== '');
+  }
 
+  updatePositions(index: number) {
+    let dep = this.departmentsList[index]
+    for(let pos of dep.positions) {
+      if(this.isPositionChanged(pos) === true) {
+        let update = new Position(pos.department_id, pos.newName, pos.newDescription);
+        this.positionsApi
+        .updatePosition(update, pos.id)
+        .subscribe(
+          () => this.populatePositions(index, dep.id),
+          error => alert(error.message)
+        );
+      }
+    }
+    this.editPositions(index);
+  }
+
+  openDeletePositionDialog(dep_index: number, pos_index: number) {
+    const dialogRef = this.dialog.open(DeleteItemDialog, {
+      width: '500px',
+      data: { item: this.departmentsList[dep_index].positions[pos_index].name, itemType: 'position' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result === true) {
+        this.deletePosition(this.departmentsList[dep_index].positions[pos_index].id, dep_index, this.departmentsList[dep_index].id)
+      }
+    });
+  }
+
+  deletePosition(position_id: number, index: number, department_id: number) {
+    this.positionsApi
+      .deletePosition(position_id)
+      .subscribe(
+        () => this.populatePositions(index, department_id),
+        error => alert(error.message)
+      );
+      this.editPositions(index);
   }
 }
