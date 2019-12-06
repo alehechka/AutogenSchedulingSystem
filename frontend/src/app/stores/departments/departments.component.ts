@@ -59,22 +59,15 @@ export class DepartmentComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.departmentsList = res;
       },
-        console.error
+        error => alert(error.message)
       );
   }
 
-  delete(departmentId: number) {
+  deleteDepartment(departmentId: number, index: number) {
     this.departmentApi
       .deleteDepartment(departmentId)
-      .subscribe(() => {
-        this.departmentsListSubs = this.departmentApi
-          .getDepartments(this.store_id)
-          .subscribe(res => {
-            this.departmentsList = res;
-          },
-            console.error
-          )
-      }, console.error);
+      .subscribe(() => {}, error => alert(error.message));
+    this.departmentsList.splice(index, 1);
   }
 
   populatePositions(index: number, departmentId: number) {
@@ -82,8 +75,11 @@ export class DepartmentComponent implements OnInit, OnDestroy {
       .getPositions(departmentId)
       .subscribe(res => {
         this.departmentsList[index].positions = res;
+        if(this.departmentsList[index].editPosition === true) {
+          this.editPositions(index, true);
+        }
       },
-        console.error
+        error => alert(error.message)
       );
   }
 
@@ -97,12 +93,13 @@ export class DepartmentComponent implements OnInit, OnDestroy {
   }
 
   savePosition(name: string, desc: string, department_id: number, index: number) {
+    this.departmentsList[index].positions.push(new Position(department_id, name, desc));
     this.positionsApi
       .savePosition(new Position(department_id, name, desc))
       .subscribe(() => {
         this.populatePositions(index, department_id);
       },
-        console.error
+        error => alert(error.message)
       );
     this.clearPosition(index);
     this.addPosition(index);
@@ -124,7 +121,7 @@ export class DepartmentComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       if (result === true) {
-        this.delete(this.departmentsList[index].id)
+        this.deleteDepartment(this.departmentsList[index].id, index)
       }
     });
   }
@@ -146,8 +143,10 @@ export class DepartmentComponent implements OnInit, OnDestroy {
       );
   }
 
-  editPositions(index: number) {
-    this.departmentsList[index].editPosition = !this.departmentsList[index].editPosition;
+  editPositions(index: number, updateOnly: boolean) {
+    if(!updateOnly) {
+      this.departmentsList[index].editPosition = !this.departmentsList[index].editPosition;
+    }
     for(let pos of this.departmentsList[index].positions) {
       pos.newName = pos.name;
       pos.newDescription = pos.description;
@@ -175,6 +174,8 @@ export class DepartmentComponent implements OnInit, OnDestroy {
     for(let pos of dep.positions) {
       if(this.isPositionChanged(pos) === true) {
         let update = new Position(pos.department_id, pos.newName, pos.newDescription);
+        pos.name = pos.newName;
+        pos.description = pos.newDescription;
         this.positionsApi
         .updatePosition(update, pos.id)
         .subscribe(
@@ -183,7 +184,7 @@ export class DepartmentComponent implements OnInit, OnDestroy {
         );
       }
     }
-    this.editPositions(index);
+    this.editPositions(index, false);
   }
 
   openDeletePositionDialog(dep_index: number, pos_index: number) {
@@ -195,18 +196,15 @@ export class DepartmentComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       if (result === true) {
-        this.deletePosition(this.departmentsList[dep_index].positions[pos_index].id, dep_index, this.departmentsList[dep_index].id)
+        this.deletePosition(this.departmentsList[dep_index].positions[pos_index].id, dep_index, pos_index);
       }
     });
   }
 
-  deletePosition(position_id: number, index: number, department_id: number) {
+  deletePosition(position_id: number, dep_index: number, pos_index: number) {
     this.positionsApi
       .deletePosition(position_id)
-      .subscribe(
-        () => this.populatePositions(index, department_id),
-        error => alert(error.message)
-      );
-      this.editPositions(index);
+      .subscribe(() => {}, error => alert(error.message));
+      this.departmentsList[dep_index].positions.splice(pos_index, 1);
   }
 }

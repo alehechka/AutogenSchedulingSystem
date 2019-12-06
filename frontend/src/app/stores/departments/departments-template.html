@@ -40,20 +40,20 @@
               *ngFor="let position of department.positions let j = index"
               [attr.data-index]="j"
             >
-              <h4 *ngIf="!department.editPosition" mat-line>
+              <h4 *ngIf="!department.editPosition || position.id === undefined" mat-line>
                 {{position.name}}
               </h4>
-              <p *ngIf="!department.editPosition" mat-line>
+              <p *ngIf="!department.editPosition || position.id === undefined" mat-line>
                 {{position.description}}
               </p>
-              <mat-form-field *ngIf="department.editPosition">
+              <mat-form-field *ngIf="department.editPosition && position.id !== undefined">
                 <input
                   matInput
                   placeholder="Name"
                   [(ngModel)]="position.newName"
                 />
               </mat-form-field>
-              <mat-form-field *ngIf="department.editPosition">
+              <mat-form-field *ngIf="department.editPosition && position.id !== undefined">
                 <input
                   matInput
                   placeholder="Description"
@@ -62,7 +62,7 @@
               </mat-form-field>
               <button
                 mat-button
-                *ngIf="department.editPosition && isAdmin()"
+                *ngIf="department.editPosition && isAdmin() && position.id !== undefined"
                 (click)="openDeletePositionDialog(i, j)"
               >
                 <i class="material-icons">delete_forever</i>

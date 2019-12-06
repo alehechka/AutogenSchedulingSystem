@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileHasArrived = false;
   user: UserProfile;
 
-  constructor(private profileApi: ProfileApiService, private router: Router) { }
+  constructor(private profileApi: ProfileApiService) { }
 
   ngOnInit() {
     this.user = Auth0.getProfile();

@@ -52,6 +52,16 @@ def get_positions(department_id):
     session.close()
     return jsonify(positions)
 
+# WIP: To be used with get_departments_positions function from departments.py
+# def get_internal_positions(department_id):
+#     # fetching from the database
+#     session = Session()
+#     position_object = session.query(Position).filter(Position.department_id == department_id)
+
+#     # serializing as JSON
+#     session.close()
+#     return position_object
+
 @blueprint.route('/add', methods=['POST'], endpoint='add_position')
 @requires_auth
 def add_position():

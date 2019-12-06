@@ -12,12 +12,16 @@ from .employee import Employee
 class Skill(Entity, Base):
     __tablename__ = 'skills'
 
-    position_id = Column(Integer, ForeignKey('positions.id'))
-    employee_id = Column(Integer, ForeignKey('employees.id'))
+    store_id = Column(Integer, ForeignKey('stores.id'))
+    department_id = Column(Integer, ForeignKey('departments.id'))
+    position_id = Column(Integer, ForeignKey('positions.id'), unique=True)
+    employee_id = Column(Integer, ForeignKey('employees.id'), unique=True)
     skill_level = Column(Integer, CheckConstraint('skill_level>=0 AND skill_level<=10'), nullable=False, default=0)
 
-    def __init__(self, position_id, employee_id, created_by, skill_level):
+    def __init__(self, store_id, department_id, position_id, employee_id, created_by, skill_level):
         Entity.__init__(self, created_by)
+        self.store_id = store_id
+        self.department_id = department_id
         self.position_id = position_id
         self.employee_id = employee_id
         self.skill_level = skill_level
@@ -25,6 +29,8 @@ class Skill(Entity, Base):
 
 class SkillSchema(Schema):
     id = fields.Number()
+    store_id = fields.Number()
+    department_id = fields.Number()
     position_id = fields.Number()
     employee_id = fields.Number()
     skill_level = fields.Number()
