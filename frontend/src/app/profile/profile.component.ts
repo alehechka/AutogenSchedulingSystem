@@ -4,12 +4,12 @@ import { Subscription } from 'rxjs/Subscription';
 import { Profile } from './profile.model';
 import { ProfileApiService } from './profile-api.service';
 import { UserProfile } from 'auth0-web/src/profile';
-import { Router } from "@angular/router";
+import { Options } from 'ng5-slider';
 
 @Component({
   selector: 'employee',
   templateUrl: "./profile-template.html",
-  styleUrls: ['profile.component.css'],
+  styleUrls: ['profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   profileListSubs: Subscription;
@@ -36,6 +36,42 @@ export class ProfileComponent implements OnInit, OnDestroy {
   authenticated = false;
   profileHasArrived = false;
   user: UserProfile;
+  hoursPanel:boolean;
+  options: Options = {
+    floor: 0,
+    ceil: 40,
+    step: 0.5,
+    showSelectionBar: true,
+  };
+  hours_options: Options = {
+    floor: 0,
+    ceil: 24,
+    step: 0.5,
+    translate: (value: number): string => {
+      let s = '';
+      if(value === 24) {
+        return '11:59pm';
+      }
+      if(value<1) {
+        s += '12';
+      } else if (value > 13) {
+        s += '' + (Math.floor(value)-12);
+      } else {
+        s += '' + Math.floor(value);
+      }
+      if(value-Math.floor(value) !== 0) {
+        s += ':30';
+      } else {
+        s += ':00';
+      }
+      if(value<12) {
+        s += 'am';
+      } else {
+        s += 'pm';
+      }
+      return s;
+    }
+  };
 
   constructor(private profileApi: ProfileApiService) { }
 
@@ -106,6 +142,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   updateProfile() {
+    this.hoursPanel = false;
     this.profileApi
       .updateProfile(this.tempProfile)
       .subscribe(res => {

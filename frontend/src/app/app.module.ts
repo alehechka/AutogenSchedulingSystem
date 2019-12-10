@@ -16,6 +16,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
+import { Ng5SliderModule } from 'ng5-slider';
+
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 
@@ -77,6 +79,7 @@ const appRoutes: Routes = [
     MatExpansionModule,
     MatListModule,
     MatDialogModule,
+    Ng5SliderModule,
   ],
   providers: [
     {

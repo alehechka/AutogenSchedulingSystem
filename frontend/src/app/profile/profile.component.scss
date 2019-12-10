@@ -1,0 +1,58 @@
+div.employee {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
+}
+
+button.new-employee {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+}
+
+@media (max-width: 720px) {
+  div.employee {
+    grid-template-columns: 1fr;
+  }
+}
+
+// We need to use ::ng-deep to overcome view encapsulation
+::ng-deep {
+  .custom-slider .ng5-slider .ng5-slider-bar {
+    background: #e3e6f5;
+    height: 3px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-selection {
+    background: #3F51B5;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer {
+    background-color: #3F51B5;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer:after {
+    display: none;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-bubble {
+    bottom: 14px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-limit {
+    font-weight: bold;
+    color: #3F51B5;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-tick {
+    width: 1px;
+    height: 10px;
+    margin-left: 4px;
+    border-radius: 0;
+    background: #e3e6f5;
+    top: -1px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-tick.ng5-slider-selected {
+    background: #3F51B5;
+  }
+}

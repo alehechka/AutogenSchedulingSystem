@@ -14,148 +14,45 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
       </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
+    <mat-expansion-panel [expanded]="hoursPanel">
+      <mat-expansion-panel-header >
         <mat-panel-title>
           Update Hours
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          required="true"
-          placeholder="Monday Start"
-          [(ngModel)]="tempProfile.monday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Monday End"
-          [(ngModel)]="tempProfile.monday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Tuesday Start"
-          [(ngModel)]="tempProfile.tuesday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Tuesday End"
-          [(ngModel)]="tempProfile.tuesday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Wednesday Start"
-          [(ngModel)]="tempProfile.wednesday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Wednesday End"
-          [(ngModel)]="tempProfile.wednesday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Thursday Start"
-          [(ngModel)]="tempProfile.thursday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Thursday End"
-          [(ngModel)]="tempProfile.thursday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Friday Start"
-          [(ngModel)]="tempProfile.friday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Friday End"
-          [(ngModel)]="tempProfile.friday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Saturday Start"
-          [(ngModel)]="tempProfile.saturday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Saturday End"
-          [(ngModel)]="tempProfile.saturday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Sunday Start"
-          [(ngModel)]="tempProfile.sunday_start"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Sunday End"
-          [(ngModel)]="tempProfile.sunday_end"
-        />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="full-width">
-        <input
-          type="number"
-          matInput
-          placeholder="Number of Hours"
-          [(ngModel)]="tempProfile.number_of_hours"
-        />
-      </mat-form-field>
-      <br />
+      <h4><b>Monday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.monday_start" [(highValue)]="tempProfile.monday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Tuesday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.tuesday_start" [(highValue)]="tempProfile.tuesday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Wednesday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.wednesday_start" [(highValue)]="tempProfile.wednesday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Thursday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.thursday_start" [(highValue)]="tempProfile.thursday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Friday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.friday_start" [(highValue)]="tempProfile.friday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Saturday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.saturday_start" [(highValue)]="tempProfile.saturday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Sunday</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.sunday_start" [(highValue)]="tempProfile.sunday_end" [options]="hours_options"></ng5-slider>
+      </div>
+      <h4><b>Number of Hours</b></h4>
+      <div class="custom-slider">
+        <ng5-slider [(value)]="tempProfile.number_of_hours" [options]="options"></ng5-slider>
+      </div>
+      <br/><br/>
       <button mat-raised-button color="primary" (click)="updateProfile()">
         Update
       </button>
