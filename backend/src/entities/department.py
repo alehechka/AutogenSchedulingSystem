@@ -6,7 +6,7 @@ from .entity import Entity, Base, Session
 from flask import Blueprint, jsonify, request
 from ..auth import AuthError, requires_auth, requires_role
 from marshmallow import Schema, fields
-from .position import Position, delete_positions, PositionSchema#, get_internal_positions
+from .position import Position, delete_positions, PositionSchema, get_internal_positions
 
 class Department(Entity, Base):
     __tablename__ = 'departments'
@@ -55,23 +55,23 @@ def get_departments(store_id):
     return jsonify(departments)
 
 # WIP: For some reason only the last item has it's positions populated.
-# @blueprint.route('/get_with_positions/<store_id>', methods=['GET'])
-# @requires_auth
-# def get_departments_positions(store_id):
-#     # fetching from the database
-#     session = Session()
-#     department_object = session.query(Department).filter(Department.store_id == store_id)
+@blueprint.route('/get_with_positions/<store_id>', methods=['GET'])
+@requires_auth
+def get_departments_positions(store_id):
+    # fetching from the database
+    session = Session()
+    department_object = session.query(Department).filter(Department.store_id == store_id)
 
-#     for department in department_object:
-#         department.positions = get_internal_positions(department.id)
+    for department in department_object:
+        department.positions = get_internal_positions(department.id)
 
-#     # transforming into JSON-serializable objects
-#     schema = DepartmentSchema(many=True)
-#     departments = schema.dump(department_object)
+    # transforming into JSON-serializable objects
+    schema = DepartmentSchema(many=True)
+    departments = schema.dump(department_object)
 
-#     # serializing as JSON
-#     session.close()
-#     return jsonify(departments)
+    # serializing as JSON
+    session.close()
+    return jsonify(departments)
 
 @blueprint.route('/add', methods=['POST'], endpoint='add_department')
 @requires_auth

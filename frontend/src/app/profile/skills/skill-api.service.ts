@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
-import {API_URL} from '../env';
-import {Profile} from './profile.model';
+import {API_URL} from '../../env';
+import {Skill} from './skill.model';
 import * as Auth0 from 'auth0-web';
 
 @Injectable()
-export class ProfileApiService {
+export class SkillApiService {
 
   constructor(private http: HttpClient) {
   }
@@ -17,36 +17,34 @@ export class ProfileApiService {
   }
 
   // GET list of public, future events
-  getProfile(): Observable<any> {
+  getEmployeeSkills(employee_id): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
-    let userId = Auth0.getProfile().sub;
     return this.http
-      .get(`${API_URL}/employee/get/${userId}`, httpOptions)
-      .catch(ProfileApiService._handleError);
+      .get(`${API_URL}/skills/get/employee/${employee_id}`, httpOptions)
+      .catch(SkillApiService._handleError);
   }
 
-  saveProfile(profile: Profile): Observable<any> {
+  saveSkill(skill: Skill): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .post(`${API_URL}/employee/add`, profile, httpOptions);
+      .post(`${API_URL}/skills/add`, skill, httpOptions);
   }
 
-  updateProfile(profile: Profile): Observable<any> {
+  updateSkill(skill: Skill): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
-    let userId = Auth0.getProfile().sub;
     return this.http
-      .post(`${API_URL}/employee/update-hours/${userId}`, profile, httpOptions);
+      .post(`${API_URL}/employee/update-hours/${skill.id}`, skill, httpOptions);
   }
 }

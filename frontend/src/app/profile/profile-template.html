@@ -1,60 +1,125 @@
 <h2>{{user.name}}</h2>
+<br /><br />
 <!--{{user|json}}
 <br><br>-->
-<!-- {{profile|json}}
-<br /><br />
-{{tempProfile|json}}
+<!-- {{departmentsList|json}}
 <br /><br /> -->
 <mat-card *ngIf="profileHasArrived">
   <mat-accordion>
-      <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Held Positions
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-      </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="hoursPanel">
-      <mat-expansion-panel-header >
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Held Positions
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list>
+        <ng-container
+          *ngFor="let department of departmentsList let i = index"
+          [attr.data-index]="i"
+        >
+          <mat-list-item>{{department.name}}</mat-list-item>
+          <mat-list style="margin-left:30px;">
+            <div
+              *ngFor="let position of department.positions let j = index"
+              [attr.data-index]="j"
+            >
+              <mat-list-item>{{position.name}}</mat-list-item>
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </mat-expansion-panel>
+    <mat-expansion-panel
+      [expanded]="hoursPanel"
+      (opened)="hoursPanel = true"
+      (closed)="hoursPanel = false"
+    >
+      <mat-expansion-panel-header>
         <mat-panel-title>
           Update Hours
         </mat-panel-title>
       </mat-expansion-panel-header>
       <h4><b>Monday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.monday_start" [(highValue)]="tempProfile.monday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.monday_start"
+          [(highValue)]="tempProfile.monday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Tuesday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.tuesday_start" [(highValue)]="tempProfile.tuesday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.tuesday_start"
+          [(highValue)]="tempProfile.tuesday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Wednesday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.wednesday_start" [(highValue)]="tempProfile.wednesday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.wednesday_start"
+          [(highValue)]="tempProfile.wednesday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Thursday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.thursday_start" [(highValue)]="tempProfile.thursday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.thursday_start"
+          [(highValue)]="tempProfile.thursday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Friday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.friday_start" [(highValue)]="tempProfile.friday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.friday_start"
+          [(highValue)]="tempProfile.friday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Saturday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.saturday_start" [(highValue)]="tempProfile.saturday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.saturday_start"
+          [(highValue)]="tempProfile.saturday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Sunday</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.sunday_start" [(highValue)]="tempProfile.sunday_end" [options]="hours_options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.sunday_start"
+          [(highValue)]="tempProfile.sunday_end"
+          [options]="hours_options"
+        ></ng5-slider>
       </div>
+      <br /><br />
       <h4><b>Number of Hours</b></h4>
       <div class="custom-slider">
-        <ng5-slider [(value)]="tempProfile.number_of_hours" [options]="options"></ng5-slider>
+        <ng5-slider
+          [(value)]="tempProfile.number_of_hours"
+          [options]="num_hours_options"
+        ></ng5-slider>
       </div>
-      <br/><br/>
-      <button mat-raised-button color="primary" (click)="updateProfile()">
+      <br /><br />
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="checkUpdateHours()"
+        (click)="updateProfile()"
+      >
         Update
+      </button>
+      <button mat-button color="warn" (click)="closeProfileHours()">
+        Cancel
       </button>
     </mat-expansion-panel>
   </mat-accordion>

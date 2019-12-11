@@ -28,6 +28,17 @@ export class DepartmentApiService {
       .catch(DepartmentApiService._handleError);
   }
 
+  getDepartmentsWithPositions(storeId): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${Auth0.getAccessToken()}`
+      })
+    };
+    return this.http
+      .get(`${API_URL}/departments/get_with_positions/${storeId}`, httpOptions)
+      .catch(DepartmentApiService._handleError);
+  }
+
   saveDepartment(department: Department): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
