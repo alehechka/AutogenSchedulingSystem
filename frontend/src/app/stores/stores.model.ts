@@ -1,3 +1,5 @@
+import { Department } from './departments/departments.model';
+
 export class Store {
     constructor(
       public street_address: string,
@@ -9,5 +11,7 @@ export class Store {
       public updatedAt?: Date,
       public createdAt?: Date,
       public lastUpdatedBy?: string,
+
+      public departments?: Department[],
     ) { }
   }

@@ -1,12 +1,16 @@
 <h2>{{user.name}}</h2>
 <br /><br />
-<!--{{user|json}}
-<br><br>-->
-<!-- {{departmentsList|json}}
+<!-- {{skills|json}}
+<br /><br />
+{{departmentsList[0].positions[0].skill|json}}
 <br /><br /> -->
-<mat-card *ngIf="profileHasArrived">
+<mat-card *ngIf="skillsHaveArrived || profileHasArrived">
   <mat-accordion>
-    <mat-expansion-panel>
+    <mat-expansion-panel
+      *ngIf="skillsHaveArrived"
+      [expanded]="skillsPanel"
+      (opened)="skillsPanel = true"
+      (closed)="skillsPanel = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Held Positions
@@ -17,19 +21,35 @@
           *ngFor="let department of departmentsList let i = index"
           [attr.data-index]="i"
         >
-          <mat-list-item>{{department.name}}</mat-list-item>
+          <mat-list-item><b>{{department.name}}</b></mat-list-item>
           <mat-list style="margin-left:30px;">
             <div
               *ngFor="let position of department.positions let j = index"
               [attr.data-index]="j"
             >
-              <mat-list-item>{{position.name}}</mat-list-item>
+              {{position.name}}
+              <div class="custom-slider">
+                <ng5-slider
+                  [(value)]="position.skill.skill_level"
+                  [options]="skill_options"
+                  (valueChange)="skill_level_changed = true"
+                ></ng5-slider>
+              </div>
             </div>
           </mat-list>
         </ng-container>
       </mat-list>
+      <mat-action-row>
+        <button mat-raised-button color="primary" [disabled]="!skill_level_changed" (click)="saveSkills(); skillsPanel=false;">
+          Save
+        </button>
+        <button mat-button color="warn" (click)="skillsPanel=false; skill_level_changed = false; addSkillsToPositions()">
+          Cancel
+        </button>
+      </mat-action-row>
     </mat-expansion-panel>
     <mat-expansion-panel
+      *ngIf="profileHasArrived"
       [expanded]="hoursPanel"
       (opened)="hoursPanel = true"
       (closed)="hoursPanel = false"

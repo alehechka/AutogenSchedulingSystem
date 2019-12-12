@@ -8,7 +8,8 @@ import { ProfileApiService } from './profile/profile-api.service';
   template: `
     <mat-toolbar color="primary" class="mat-elevation-z10">
       <button mat-button (click)="goHome()">Home</button>
-      <button mat-button (click)="goStores()">Stores</button>
+      <button mat-button (click)="goStores()" *ngIf="authenticated">Stores</button>
+      <button mat-button (click)="goSchedule()" *ngIf="authenticated">Schedule</button>
       <button mat-button (click)="goAbout()">About</button>
 
       <!-- This fills the remaining space of the current row -->
@@ -52,5 +53,9 @@ export class AppComponent implements OnInit {
 
   goStores() {
     this.router.navigate(['/stores'])
+  }
+
+  goSchedule() {
+    this.router.navigate(['/schedule'])
   }
 }

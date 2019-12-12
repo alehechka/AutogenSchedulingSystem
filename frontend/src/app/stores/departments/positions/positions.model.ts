@@ -1,3 +1,5 @@
+import { Skill } from 'src/app/profile/skills/skill.model';
+
 export class Position {
     constructor(
       public department_id: number,
@@ -11,5 +13,6 @@ export class Position {
 
       public newName?: string,
       public newDescription?: string,
+      public skill?: Skill,
     ) { }
   }

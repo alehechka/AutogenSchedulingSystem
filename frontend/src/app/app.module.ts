@@ -35,6 +35,11 @@ import { DepartmentFormComponent } from './stores/departments/departments-form.c
 
 import { PositionApiService } from './stores/departments/positions/positions-api.service';
 
+import { SkillApiService } from './profile/skills/skill-api.service';
+
+import { ScheduleApiService } from './schedule/schedule-api.service';
+import { ScheduleComponent } from './schedule/schedule.component';
+
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -46,6 +51,7 @@ const appRoutes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'departments/:store_id', component: DepartmentComponent },
   { path: 'new-department/:store_id', component: DepartmentFormComponent },
+  { path: 'schedule', component: ScheduleComponent },
 ];
 
 @NgModule({
@@ -59,6 +65,7 @@ const appRoutes: Routes = [
     DepartmentComponent,
     DeleteItemDialog,
     DepartmentFormComponent,
+    ScheduleComponent,
     CallbackComponent,
   ],
   entryComponents: [
@@ -86,7 +93,7 @@ const appRoutes: Routes = [
       provide: MatDialogRef,
       useValue: {}
     },
-    StoresApiService, ProfileApiService, DepartmentApiService, PositionApiService,],
+    StoresApiService, ProfileApiService, DepartmentApiService, PositionApiService, SkillApiService, ScheduleApiService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

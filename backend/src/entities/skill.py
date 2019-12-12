@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from sqlalchemy import Column, String, Integer, Date, ForeignKey, CheckConstraint
+from sqlalchemy import Column, String, Integer, Date, ForeignKey, CheckConstraint, UniqueConstraint
 from sqlalchemy.orm import relationship
 from .entity import Entity, Base, Session
 from flask import Blueprint, jsonify, request
@@ -14,9 +14,10 @@ class Skill(Entity, Base):
 
     store_id = Column(Integer, ForeignKey('stores.id'))
     department_id = Column(Integer, ForeignKey('departments.id'))
-    position_id = Column(Integer, ForeignKey('positions.id'), unique=True)
-    employee_id = Column(Integer, ForeignKey('employees.id'), unique=True)
+    position_id = Column(Integer, ForeignKey('positions.id'))
+    employee_id = Column(Integer, ForeignKey('employees.id'))
     skill_level = Column(Integer, CheckConstraint('skill_level>=0 AND skill_level<=10'), nullable=False, default=0)
+    UniqueConstraint('position_id', 'employee_id')
 
     def __init__(self, store_id, department_id, position_id, employee_id, created_by, skill_level):
         Entity.__init__(self, created_by)
@@ -76,7 +77,7 @@ def get_skills_by_employee(employee_id):
 @requires_auth
 def add_position():
     # mount store object
-    posted_skill = SkillSchema(only=('position_id', 'employee_id', 'skill_level')) \
+    posted_skill = SkillSchema(only=('store_id', 'department_id', 'position_id', 'employee_id', 'skill_level')) \
         .load(request.get_json())
 
     skill = Skill(**posted_skill, created_by="HTTP post request")
@@ -96,7 +97,7 @@ def add_position():
 #@requires_user(request.get_json().auth0_id)
 def update_employee(skill_id):
     # mount store object
-    posted_skill = SkillSchema(only=('position_id', 'employee_id', 'skill_level')) \
+    posted_skill = SkillSchema(only=('store_id', 'department_id', 'position_id', 'employee_id', 'skill_level')) \
         .load(request.get_json())
 
     request_skill = Skill(**posted_skill, created_by="HTTP post request")
@@ -104,10 +105,11 @@ def update_employee(skill_id):
     # persist employee
     session = Session()
     skill = session.query(Skill).filter(Skill.id == skill_id).first()
-    skill.skill_level = request_skill.skill_level
-    skill.last_updated_by = request_skill.last_updated_by
-    skill.updated_at = request_skill.updated_at
-    session.commit()
+    if(request_skill.skill_level != skill.skill_level):
+        skill.skill_level = request_skill.skill_level
+        skill.last_updated_by = request_skill.last_updated_by
+        skill.updated_at = request_skill.updated_at
+        session.commit()
 
     # return updated employee
     updated_skill = SkillSchema().dump(skill)

@@ -8,6 +8,9 @@ import { Options } from 'ng5-slider';
 import { Department } from '../stores/departments/departments.model';
 import { DepartmentApiService } from '../stores/departments/departments-api.service';
 import { PositionApiService } from '../stores/departments/positions/positions-api.service';
+import { SkillApiService } from './skills/skill-api.service';
+import { Skill } from './skills/skill.model';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'employee',
@@ -40,10 +43,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
   departmentsListSub: Subscription;
   departmentsList: Department[];
 
+  skills: Skill[];
+
   authenticated = false;
   profileHasArrived = false;
+  skillsHaveArrived = false;
   user: UserProfile;
   hoursPanel: boolean;
+  skillsPanel: boolean;
+
+  skill_options: Options = {
+    floor: 0,
+    ceil: 10,
+    step: 1,
+    showSelectionBar: true,
+    translate: (value: number): string => {
+      switch (value) {
+        case 0: return "No experience";
+        case 10: return "Expert";
+        default: return "" + value;
+      }
+    }
+  };
 
   num_hours_options: Options = {
     floor: 0,
@@ -60,28 +81,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
     draggableRange: true,
     translate: (value: number): string => {
       let s = '';
-      if(value === this.hours_options.minLimit) {
+      if (value === this.hours_options.minLimit) {
         return 'Open';
       }
-      if(value === this.hours_options.maxLimit) {
+      if (value === this.hours_options.maxLimit) {
         return 'Close';
       }
-      if(value === 24) {
+      if (value === 24) {
         return '11:59pm';
       }
-      if(value<1) {
+      if (value < 1) {
         s += '12';
       } else if (value > 13) {
-        s += '' + (Math.floor(value)-12);
+        s += '' + (Math.floor(value) - 12);
       } else {
         s += '' + Math.floor(value);
       }
-      if(value-Math.floor(value) !== 0) {
+      if (value - Math.floor(value) !== 0) {
         s += ':30';
       } else {
         s += ':00';
       }
-      if(value<12) {
+      if (value < 12) {
         s += 'am';
       } else {
         s += 'pm';
@@ -93,7 +114,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   };
 
-  constructor(private profileApi: ProfileApiService, private departmentsApi: DepartmentApiService, private positionsApi: PositionApiService) { }
+  constructor(
+    private profileApi: ProfileApiService,
+    private departmentsApi: DepartmentApiService,
+    private positionsApi: PositionApiService,
+    private skillsApi: SkillApiService,
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit() {
     this.user = Auth0.getProfile();
@@ -214,14 +241,60 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getPositions() {
-    for(let department of this.departmentsList) {
-    this.positionsApi
-      .getPositions(department.id)
+    for (let department of this.departmentsList) {
+      this.positionsApi
+        .getPositions(department.id)
+        .subscribe(res => {
+          department.positions = res;
+          this.getSkills();
+        },
+          error => alert(error.message)
+        );
+    }
+  }
+
+  getSkills() {
+    this.skillsApi
+      .getEmployeeSkills(this.profile.id)
       .subscribe(res => {
-        department.positions = res;
+        this.skills = res;
+        this.addSkillsToPositions();
       },
         error => alert(error.message)
       );
+  }
+
+  addSkillsToPositions() {
+    for (let department of this.departmentsList) {
+      for (let position of department.positions) {
+        position.skill = new Skill(department.store_id, department.id, position.id, this.profile.id, 0);
+        for (let skill of this.skills) {
+          if (skill.position_id === position.id) {
+            position.skill = Object.assign({}, skill);
+          }
+        }
+      }
+    }
+    this.skillsHaveArrived = true;
+  }
+
+  saveSkills() {
+    for (let department of this.departmentsList) {
+      for (let position of department.positions) {
+        if(position.skill.skill_level !== 0 && typeof position.skill.id === 'undefined') {
+          this.skillsApi
+            .saveSkill(position.skill)
+            .subscribe(res => {},
+              error => alert(error.message)
+            );
+        } else if (typeof position.skill.id !== 'undefined') {
+          this.skillsApi
+          .updateSkill(position.skill)
+          .subscribe(res => {},
+            error => alert(error.message)
+          );
+        }
+      }
     }
   }
 }

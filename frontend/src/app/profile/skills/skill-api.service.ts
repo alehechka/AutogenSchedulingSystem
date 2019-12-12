@@ -39,12 +39,13 @@ export class SkillApiService {
   }
 
   updateSkill(skill: Skill): Observable<any> {
+    let update = new Skill(skill.store_id, skill.department_id, skill.position_id, skill.employee_id, skill.skill_level);
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${Auth0.getAccessToken()}`
       })
     };
     return this.http
-      .post(`${API_URL}/employee/update-hours/${skill.id}`, skill, httpOptions);
+      .post(`${API_URL}/skills/update/${skill.id}`, update, httpOptions);
   }
 }

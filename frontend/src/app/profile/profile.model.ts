@@ -20,7 +20,7 @@ export class Profile {
       public role?: string,
       public start_date?: Date,
       public end_date?: Date,
-      public _id?: number,
+      public id?: number,
       public updatedAt?: Date,
       public createdAt?: Date,
       public lastUpdatedBy?: string,
