@@ -1,5 +1,3 @@
-import { Store } from '../stores/stores.model';
-
 export class Schedule {
     constructor(
       public position_id: number,
@@ -9,10 +7,8 @@ export class Schedule {
       public start_date_time: Date,
       public end_date_time: Date,
       public id?: number,
-      public updatedAt?: Date,
-      public createdAt?: Date,
-      public lastUpdatedBy?: string,
-
-      public store?: Store
+      public updated_at?: Date,
+      public created_at?: Date,
+      public last_updated_by?: string,
     ) { }
   }

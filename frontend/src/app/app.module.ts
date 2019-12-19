@@ -15,7 +15,7 @@ import {
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-
+import { MatMenuModule } from '@angular/material/menu';
 import { Ng5SliderModule } from 'ng5-slider';
 
 import { HomeComponent } from './home/home.component';
@@ -39,6 +39,8 @@ import { SkillApiService } from './profile/skills/skill-api.service';
 
 import { ScheduleApiService } from './schedule/schedule-api.service';
 import { ScheduleComponent } from './schedule/schedule.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 
 const appRoutes: Routes = [
@@ -51,7 +53,7 @@ const appRoutes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'departments/:store_id', component: DepartmentComponent },
   { path: 'new-department/:store_id', component: DepartmentFormComponent },
-  { path: 'schedule', component: ScheduleComponent },
+  { path: 'schedule/:store_id/:view', component: ScheduleComponent },
 ];
 
 @NgModule({
@@ -87,6 +89,8 @@ const appRoutes: Routes = [
     MatListModule,
     MatDialogModule,
     Ng5SliderModule,
+    MatMenuModule,
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
   ],
   providers: [
     {

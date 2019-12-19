@@ -10,7 +10,6 @@ import { DepartmentApiService } from '../stores/departments/departments-api.serv
 import { PositionApiService } from '../stores/departments/positions/positions-api.service';
 import { SkillApiService } from './skills/skill-api.service';
 import { Skill } from './skills/skill.model';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'employee',
@@ -20,6 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class ProfileComponent implements OnInit, OnDestroy {
   profileListSubs: Subscription;
   profile: Profile;
+
   tempProfile: {
     store_id: number,
     auth0_id: string,
@@ -119,7 +119,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private departmentsApi: DepartmentApiService,
     private positionsApi: PositionApiService,
     private skillsApi: SkillApiService,
-    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {

@@ -1,0 +1,32 @@
+<mat-toolbar color="primary" class="mat-elevation-z10">
+  <!-- <button mat-button (click)="goHome()">Home</button> -->
+  <button mat-button (click)="goStores()" *ngIf="authenticated">Stores</button>
+  <button mat-button (click)="goSchedule()" *ngIf="authenticated">
+    Schedule
+  </button>
+  <!-- <button mat-button (click)="goAbout()">About</button> -->
+
+  <!-- This fills the remaining space of the current row -->
+  <span class="fill-remaining-space"></span>
+  <button mat-button (click)="signIn();" *ngIf="!authenticated">Sign In</button>
+  <button mat-button [matMenuTriggerFor]="menu" *ngIf="authenticated">
+    <div *ngIf="user !== null">
+      Hi, {{user.given_name}} &#9660;
+    </div>
+    <div *ngIf="user === null">
+      Account &#9660;
+    </div>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="goProfile()" *ngIf="authenticated">
+      Profile
+    </button>
+    <button mat-menu-item (click)="signOut(); goHome();">
+      Sign Out
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<div class="view-container">
+  <router-outlet></router-outlet>
+</div>
