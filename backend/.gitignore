@@ -1,5 +1,5 @@
 #SQL Login
-entity.py
+src/entities/entity.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
