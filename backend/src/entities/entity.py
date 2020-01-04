@@ -11,7 +11,7 @@ db_user = 'stqmrsnl'
 db_password = 'Jn5683BubdKqUAvyxfXm0oa3K4I0QJeE'
 engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_url}/{db_name}')
 Session = sessionmaker(bind=engine)
-#jnckjndsk
+
 Base = declarative_base()
 
 

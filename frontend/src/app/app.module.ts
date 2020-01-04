@@ -41,7 +41,6 @@ import { ScheduleApiService } from './schedule/schedule-api.service';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 const appRoutes: Routes = [
@@ -92,7 +91,6 @@ const appRoutes: Routes = [
     Ng5SliderModule,
     MatMenuModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
-    NgbModalModule,
   ],
   providers: [
     {
