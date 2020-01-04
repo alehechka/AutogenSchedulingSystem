@@ -24,7 +24,7 @@ import {
   CalendarView
 } from 'angular-calendar';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { map } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 const colors: any = {
   red: {
@@ -48,29 +48,25 @@ const colors: any = {
   styleUrls: ['schedule.component.css'],
 })
 export class ScheduleComponent implements OnInit {
-  storesListSubs: Subscription;
-  storesList: Schedule[];
   authenticated = false;
   user: UserProfile;
-  scheduleSubs: Subscription;
-  scheduleList: Schedule[];
   shifts: Observable<Array<CalendarEvent<{ scheduleItem: Schedule }>>>;
   store_id: string;
-  href: any;
+  loadingSchedule: boolean;
 
-  constructor(private router: ActivatedRoute, private scheduleApi: ScheduleApiService, private modal: NgbModal, private cdr: ChangeDetectorRef) { }
+  constructor(private router: ActivatedRoute, private scheduleApi: ScheduleApiService, private modal: NgbModal, private cdr: ChangeDetectorRef, private location: Location) { }
 
   ngOnInit() {
     const self = this;
     this.store_id = this.router.snapshot.paramMap.get("store_id");
     this.setViewString(this.router.snapshot.paramMap.get("view"));
-    this.href = this.router.url;
     Auth0.subscribe((authenticated) => (self.authenticated = authenticated));
     this.getWeekSchedule();
   }
 
   getWeekSchedule(): void {
-    this.scheduleSubs = this.scheduleApi
+    this.loadingSchedule = true;
+    this.scheduleApi
       .getSchedule(this.store_id)
       .subscribe(res => {
         this.shifts = res.map((scheduleItem: Schedule) => {
@@ -78,7 +74,7 @@ export class ScheduleComponent implements OnInit {
             start: new Date(scheduleItem.start_date_time),
             end: new Date(scheduleItem.end_date_time),
             title: 'EmpID: ' + scheduleItem.employee_id + 'in position: ' + scheduleItem.position_id,
-            color: colors.red,
+            color: colors.blue,
             actions: this.actions,
             resizable: {
               beforeStart: true,
@@ -91,6 +87,7 @@ export class ScheduleComponent implements OnInit {
           };
         })
         console.log(this.shifts);
+        this.loadingSchedule = false;
         this.cdr.detectChanges();
       })
   }
@@ -105,7 +102,7 @@ export class ScheduleComponent implements OnInit {
 
   dayStartHour = Math.max(6, getHours(new Date()) - 12);
 
-  dayEndHour = Math.min(23, getHours(new Date()) + 12);
+  dayEndHour = 23;//Math.min(23, getHours(new Date()) + 12);
 
   modalData: {
     action: string;
@@ -189,23 +186,23 @@ export class ScheduleComponent implements OnInit {
     }
   }
 
-  eventTimesChanged({
-    event,
-    newStart,
-    newEnd
-  }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map(iEvent => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
-  }
+  // eventTimesChanged({
+  //   event,
+  //   newStart,
+  //   newEnd
+  // }: CalendarEventTimesChangedEvent): void {
+  //   this.shifts = this.shifts.map(iEvent => {
+  //     if (iEvent === event) {
+  //       return {
+  //         ...event,
+  //         start: newStart,
+  //         end: newEnd
+  //       };
+  //     }
+  //     return iEvent;
+  //   });
+  //   //this.handleEvent('Dropped or resized', event);
+  // }
 
   handleEvent(action: string, event: CalendarEvent): void {
     this.modalData = { event, action };
@@ -235,7 +232,7 @@ export class ScheduleComponent implements OnInit {
 
   setView(view: CalendarView) {
     this.view = view;
-    //
+    this.location.replaceState(`/schedule/${this.store_id}/${this.view}`);
   }
 
   setViewString(view: string) {
