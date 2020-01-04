@@ -4,12 +4,8 @@ from datetime import datetime
 from sqlalchemy import create_engine, Column, String, Integer, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from .db_conn import engine
 
-db_url = 'otto.db.elephantsql.com:5432'
-db_name = 'stqmrsnl'
-db_user = 'stqmrsnl'
-db_password = 'Jn5683BubdKqUAvyxfXm0oa3K4I0QJeE'
-engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_url}/{db_name}')
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
