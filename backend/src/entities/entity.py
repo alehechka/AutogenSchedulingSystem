@@ -8,10 +8,10 @@ from sqlalchemy.orm import sessionmaker
 db_url = 'otto.db.elephantsql.com:5432'
 db_name = 'stqmrsnl'
 db_user = 'stqmrsnl'
-db_password = 'Jn5683BubdKqUAvyxfXm0oa3K4I0QJeE'
+db_password = 'LKgl9T9V3Ov7AQCreJUIrTxxUWfebd2E'
 engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_url}/{db_name}')
 Session = sessionmaker(bind=engine)
-#jnckjndsk
+
 Base = declarative_base()
 
 
