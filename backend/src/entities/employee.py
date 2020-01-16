@@ -31,6 +31,10 @@ class Employee(Entity, Base):
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=True)
     role = Column(String, CheckConstraint('role=\'admin\' OR role=\'owner\' OR role=\'manager\' OR role=\'employee\''), nullable=False, server_default='employee')
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=True)
+    email = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
     auth0_id = Column(String, unique=True)
 
     def __init__(self, store_id, auth0_id, created_by, end_date=None, role='employee',
@@ -41,7 +45,9 @@ class Employee(Entity, Base):
                 friday_start=0, friday_end=0, 
                 saturday_start=0, saturday_end=0, 
                 sunday_start=0, sunday_end=0, 
-                number_of_hours=0):
+                number_of_hours=0,
+                first_name='New', last_name=None,
+                email=None, phone=None):
         Entity.__init__(self, created_by)
         self.store_id = store_id
         self.monday_start = monday_start
@@ -62,6 +68,10 @@ class Employee(Entity, Base):
         self.start_date = datetime.now()
         self.end_date = end_date
         self.role = role
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.phone = email
         self.auth0_id = auth0_id
 
 
@@ -86,6 +96,10 @@ class EmployeeSchema(Schema):
     start_date = fields.DateTime()
     end_date = fields.DateTime()
     role = fields.Str()
+    first_name = fields.Str()
+    last_name = fields.Str()
+    email = fields.Str()
+    phone = fields.Str()
     auth0_id = fields.Str()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
@@ -124,7 +138,8 @@ def add_employee():
                 'sunday_start', 'sunday_end', 
                 'number_of_hours', 
                 'start_date', 'end_date', 
-                'role', 'auth0_id')) \
+                'role', 'first_name', 'last_name',
+                'email', 'phone', 'auth0_id')) \
         .load(request.get_json())
 
     employee = Employee(**posted_employee, created_by="HTTP post request")
@@ -183,3 +198,5 @@ def update_employee(auth0_id):
     updated_employee = EmployeeSchema().dump(employee)
     session.close()
     return jsonify(updated_employee), 201
+
+#create update-employee-info function
